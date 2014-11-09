@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ * Copyright (C) 2014 Peter Gregus (C3C076@xda)
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+<resources>
+
+    <string name="app_name">Statusbar download progress</string>
+    <string name="app_desc">Shows download progress bar in status bar for downloads carried out via
+        Android\'s standard download manager</string>
+
+    <string name="module_not_active">Module is not active. Use Xposed Installer to activate module and then 
+        reboot your device.</string>
+
+    <!-- Options -->
+    <string name="pref_cat_options_title">Options</string>
+
+    <string name="pref_mode_title">Mode</string>
+    <string name="sb_download_progress_off">Disabled</string>
+    <string name="sb_download_progress_top">Top edge</string>
+    <string name="sb_download_progress_bottom">Bottom edge</string>
+
+    <string name="pref_edge_margin_title">Edge margin</string>
+    <string name="edge_margin_0">None</string>
+    <string name="edge_margin_1">1dp</string>
+    <string name="edge_margin_2">2dp</string>
+    <string name="edge_margin_3">3dp</string>
+
+    <!-- About -->
+    <string name="pref_cat_about_title">About</string>
+    <string name="pref_about_summary">Developed by C3C076@XDA. Touch to visit official support thread.</string>
+    <string name="pref_about_donate_title">Support developer</string>
+    <string name="pref_about_donate_waiting">Waiting for Google billing services&#8230;</string>
+    <string name="pref_about_donate_error">Error contacting Google billing services</string>
+    <string name="pref_about_donate_no_items">There are currently no in-app donation items available</string>
+    <string name="pref_about_donate_summary">Touch to initiate in-app donation</string>
+    <string name="donate_transaction_error">Donation transaction was unsuccessful</string>
+    <string name="donate_transaction_ok">Donation transaction was successful. Thank you very much for your support!</string>
+
+</resources>
