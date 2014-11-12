@@ -14,6 +14,7 @@
  */
 package com.ceco.sbdp;
 
+import android.os.Build;
 import android.os.IBinder;
 import android.view.ViewGroup;
 import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -110,5 +111,15 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable { 
         new XSharedPreferences(PACKAGE_NAME_MODULE).makeWorldReadable();
+        if (DEBUG) {
+            XposedBridge.log("SBDP:Hardware: " + Build.HARDWARE);
+            XposedBridge.log("SBDP:Product: " + Build.PRODUCT);
+            XposedBridge.log("SBDP:Device manufacturer: " + Build.MANUFACTURER);
+            XposedBridge.log("SBDP:Device brand: " + Build.BRAND);
+            XposedBridge.log("SBDP:Device model: " + Build.MODEL);
+            XposedBridge.log("SBDP:Android SDK: " + Build.VERSION.SDK_INT);
+            XposedBridge.log("SBDP:Android Release: " + Build.VERSION.RELEASE);
+            XposedBridge.log("SBDP:ROM: " + Build.DISPLAY);
+        }
     }
 }

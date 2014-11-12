@@ -150,6 +150,7 @@ public class StatusbarDownloadProgressView extends View {
     private boolean verifyNotification(Object statusBarNotif) {
         if (statusBarNotif == null) return false;
         String pkgName = (String) XposedHelpers.getObjectField(statusBarNotif, "pkg");
+        if (ModSbdp.DEBUG) ModSbdp.log("verifyNotification: " + pkgName);
         if (PACKAGE_NAME_DOWNLOAD_PROVIDER.equals(pkgName)) {
             return (Boolean) XposedHelpers.callMethod(statusBarNotif, "isOngoing");
         }
@@ -160,12 +161,16 @@ public class StatusbarDownloadProgressView extends View {
         if (Build.VERSION.SDK_INT > 17) {
             String tag = (String) XposedHelpers.getObjectField(statusBarNotif, "tag");
             if (tag != null && tag.contains(":")) {
-                return tag.substring(tag.indexOf(":")+1);
+                String id = tag.substring(tag.indexOf(":")+1);
+                if (ModSbdp.DEBUG) ModSbdp.log("getIdentifier: " + id);
+                return id;
             }
             if (ModSbdp.DEBUG) ModSbdp.log("getIdentifier: Unexpected notification tag: " + tag);
             return null;
         } else {
-            return String.valueOf(XposedHelpers.getIntField(statusBarNotif, "id"));
+            String id = String.valueOf(XposedHelpers.getIntField(statusBarNotif, "id"));
+            if (ModSbdp.DEBUG) ModSbdp.log("getIdentifier: " + id);
+            return id;
         }
     }
 
