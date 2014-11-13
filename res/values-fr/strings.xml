@@ -7,24 +7,24 @@
 *
 * http://www.apache.org/licenses/LICENSE-2.0
 *
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
+* Sauf si requis par la loi en vigueur ou accord écrit, le logiciel
+* Distribué sous la licence est distribué «TEL QUEL»,
+* SANS GARANTIES OU CONDITIONS DE QUELQUE NATURE QUE CE SOIT, expresse ou implicite.
+* Voir la licence pour les autorisations spécifiques aux différentes langues et
+* Limites prévues par la licence.
 -->
 <resources>
 
     <string name="app_name">Statusbar download progress</string>
-    <string name="app_desc">Voir la barre de progression de téléchargement dans la barre de statut pour les téléchargements éffectués via le gestionnaire de téléchargemetns standart d\'Android</string>
-    <string name="module_not_active">Le module n\'est pa activé dans l\'apli "XPosed Installer", utilisé cette dernière pour la cocher afin d\'activer cette application après redémarrage du téléphone.</string>
+    <string name="app_desc">Afficher la barre de progression de téléchargement dans la barre de statut pour les téléchargements éffectués via le gestionnaire de téléchargemetns standart d\'Android</string>
+    <string name="module_not_active">Le module n\'est pa activé dans l\'apli "XPosed Installer", utilisé cette dernière pour cocher l\'appli afin de l\'activer au prochain démarrage du téléphone.</string>
 
     <!-- Options -->
     <string name="pref_cat_options_title">Options</string>
     <string name="pref_mode_title">Mode</string>
     <string name="sb_download_progress_off">Désactivé</string>
-    <string name="sb_download_progress_top">Bord du haut</string>
-    <string name="sb_download_progress_bottom">Bord du bas</string>
+    <string name="sb_download_progress_top">Bord suppérieur</string>
+    <string name="sb_download_progress_bottom">Bord inférieur</string>
     <string name="pref_edge_margin_title">Taille de l\'indicateur</string>
     <string name="edge_margin_0">Masquer</string>
     <string name="edge_margin_1">1dp</string>
@@ -32,14 +32,14 @@
     <string name="edge_margin_3">3dp</string>
 
     <!-- About -->
-    <string name="pref_cat_about_title">A propos de</string>
-    <string name="pref_about_summary">Dévelopé par C3C076@XDA. Appuyez pour accéder au sujet officiel.</string>
-    <string name="pref_about_donate_title">Don pour le  developeur</string>
-    <string name="pref_about_donate_waiting">Patientez pour els services de facturation de Google&#8230;</string>
+    <string name="pref_cat_about_title">A propos</string>
+    <string name="pref_about_summary">Dévelopé par C3C076@XDA. Toucher pour accéder au sujet officiel.</string>
+    <string name="pref_about_donate_title">Don pour le developeur</string>
+    <string name="pref_about_donate_waiting">Patienter en attendant les services de facturation de Google&#8230;</string>
     <string name="pref_about_donate_error">Erreure de contact des services de facturation de Google</string>
-    <string name="pref_about_donate_no_items">Il n\'y a actuellement pas de donnations dans l\'application disponibles.</string>
-    <string name="pref_about_donate_summary">Toucher pour initiaterla donation dans l\'application.</string>
+    <string name="pref_about_donate_no_items">Il n\'y a actuellement pas de dons possibles dans l\'application.</string>
+    <string name="pref_about_donate_summary">Toucher pour débuter le paiement dans l\'application.</string>
     <string name="donate_transaction_error">La transaction du don ne s\'est pas éffectué avec succès.</string>
-    <string name="donate_transaction_ok">La transaction du don ne s\'est pas éffectué avec succès. Merci beaucoup de votre don!</string>
+    <string name="donate_transaction_ok">La transaction du don s\'est éffectué avec succès. Merci beaucoup de votre don!</string>
 
 </resources>
