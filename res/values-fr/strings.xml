@@ -3,7 +3,7 @@
 * Copyright (C) 2014 Peter Gregus (C3C076@xda)
 * Liscence Apache, version 2.0 (la "License");
 * Vous ne pouvez pas utiliser ce fichier sauf en conformité avec la Licence.
-* Vous pouvez obtenir une copie de la liscence à:
+* Vous pouvez obtenir une copie de la licence à:
 *
 * http://www.apache.org/licenses/LICENSE-2.0
 *
@@ -16,30 +16,33 @@
 <resources>
 
     <string name="app_name">Statusbar download progress</string>
-    <string name="app_desc">Afficher la barre de progression de téléchargement dans la barre de statut pour les téléchargements éffectués via le gestionnaire de téléchargemetns standart d\'Android</string>
-    <string name="module_not_active">Le module n\'est pa activé dans l\'apli "XPosed Installer", utilisé cette dernière pour cocher l\'appli afin de l\'activer au prochain démarrage du téléphone.</string>
+    <string name="app_desc">Affiche une barre de progression de téléchargement dans la barre d\'état pour les téléchargements effectués via le gestionnaire de téléchargement standard Android</string>
+    
+    <string name="module_not_active">Module inactif, veuillez utiliser Xposed Installer pour activer le module et ensuite redémarrer votre appareil.</string>
 
     <!-- Options -->
     <string name="pref_cat_options_title">Options</string>
+    
     <string name="pref_mode_title">Mode</string>
     <string name="sb_download_progress_off">Désactivé</string>
-    <string name="sb_download_progress_top">Bord suppérieur</string>
+    <string name="sb_download_progress_top">Bord supérieur</string>
     <string name="sb_download_progress_bottom">Bord inférieur</string>
-    <string name="pref_edge_margin_title">Taille de l\'indicateur</string>
+    
+    <string name="pref_edge_margin_title">Taille de la barre</string>
     <string name="edge_margin_0">Masquer</string>
     <string name="edge_margin_1">1dp</string>
     <string name="edge_margin_2">2dp</string>
     <string name="edge_margin_3">3dp</string>
 
     <!-- About -->
-    <string name="pref_cat_about_title">A propos</string>
-    <string name="pref_about_summary">Dévelopé par C3C076@XDA. Toucher pour accéder au sujet officiel.</string>
-    <string name="pref_about_donate_title">Don pour le developeur</string>
-    <string name="pref_about_donate_waiting">Patienter en attendant les services de facturation de Google&#8230;</string>
-    <string name="pref_about_donate_error">Erreure de contact des services de facturation de Google</string>
-    <string name="pref_about_donate_no_items">Il n\'y a actuellement pas de dons possibles dans l\'application.</string>
-    <string name="pref_about_donate_summary">Toucher pour débuter le paiement dans l\'application.</string>
-    <string name="donate_transaction_error">La transaction du don ne s\'est pas éffectué avec succès.</string>
-    <string name="donate_transaction_ok">La transaction du don s\'est éffectué avec succès. Merci beaucoup de votre don!</string>
+    <string name="pref_cat_about_title">À propos</string>
+    <string name="pref_about_summary">Développé par C3C076@XDA. Appuyez pour accéder au sujet officiel.</string>
+    <string name="pref_about_donate_title">Don pour le développeur</string>
+    <string name="pref_about_donate_waiting">En attente des services de facturation Google&#8230;</string>
+    <string name="pref_about_donate_error">Erreur de contact des services de facturation Google</string>
+    <string name="pref_about_donate_no_items">Il n\'y a actuellement aucun élément de don via l\'appli disponible.</string>
+    <string name="pref_about_donate_summary">Appuyez pour lancer le don via l\'appli.</string>
+    <string name="donate_transaction_error">La transaction a échoué.</string>
+    <string name="donate_transaction_ok">La transaction s\'est effectuée avec succès. Merci beaucoup pour votre don !</string>
 
 </resources>
