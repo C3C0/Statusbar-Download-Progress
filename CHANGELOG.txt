@@ -1,3 +1,11 @@
+Changelog 1.1 - 15/11/2014
+--------------------------------------
+- Fixed compatibility on Android 4.1 and 4.2
+- Added option for choosing progress bar color
+- Added option for hiding module icon from launcher
+- Added French translations (thanks to Rom,Micks29)
+- Added Slovak and Czech translations
+
 Changelog 1.0 - 09/11/2014
 --------------------------------------
 - Initial version
