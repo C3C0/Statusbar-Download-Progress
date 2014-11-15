@@ -63,6 +63,11 @@ public class StatusbarDownloadProgressView extends View {
                             getResources().getDisplayMetrics());
                     updatePosition();
                 }
+                if (intent.hasExtra(Settings.EXTRA_COLOR)) {
+                    setBackgroundColor(intent.getIntExtra(Settings.EXTRA_COLOR, 
+                            Build.VERSION.SDK_INT >= 19 ? Color.WHITE : 
+                                getResources().getColor(android.R.color.holo_blue_dark)));
+                }
             }
         }
     };
@@ -80,8 +85,9 @@ public class StatusbarDownloadProgressView extends View {
                 getResources().getDisplayMetrics());
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(0, heightPx);
         setLayoutParams(lp);
-        setBackgroundColor(Build.VERSION.SDK_INT >= 19 ? Color.WHITE :
-            getResources().getColor(android.R.color.holo_blue_dark));
+        setBackgroundColor(prefs.getInt(Settings.PREF_KEY_COLOR, 
+                Build.VERSION.SDK_INT >= 19 ? Color.WHITE : 
+                    getResources().getColor(android.R.color.holo_blue_dark)));
         setVisibility(View.GONE);
         updatePosition();
 

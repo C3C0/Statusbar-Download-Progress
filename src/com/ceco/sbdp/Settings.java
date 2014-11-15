@@ -53,6 +53,8 @@ public class Settings extends Activity {
     public static final String PREF_CAT_KEY_OPTIONS = "pref_cat_options";
     public static final String PREF_KEY_MODE = "pref_mode";
     public static final String PREF_KEY_EDGE_MARGIN = "pref_edge_margin";
+    public static final String PREF_KEY_COLOR = "pref_color";
+
     public static final String PREF_KEY_ABOUT = "pref_about";
     public static final String PREF_KEY_ABOUT_DONATE = "pref_about_donate";
     public static final String PREF_KEY_HIDE_LAUNCHER_ICON = "pref_hide_launcher_icon";
@@ -60,6 +62,7 @@ public class Settings extends Activity {
     public static final String ACTION_SETTINGS_CHANGED = "sbdp.intent.action.SETTINGS_CHANGED";
     public static final String EXTRA_MODE = "mode";
     public static final String EXTRA_EDGE_MARGIN = "edgeMargin";
+    public static final String EXTRA_COLOR = "color";
 
     private static SettingsFragment sSettingsFragment;
 
@@ -231,6 +234,10 @@ public class Settings extends Activity {
             } else if (key.equals(PREF_KEY_EDGE_MARGIN)) {
                 intent.setAction(ACTION_SETTINGS_CHANGED);
                 intent.putExtra(EXTRA_EDGE_MARGIN,Integer.valueOf(prefs.getString(key, "0")));
+            } else if (key.equals(PREF_KEY_COLOR)) {
+                intent.setAction(ACTION_SETTINGS_CHANGED);
+                intent.putExtra(EXTRA_COLOR, prefs.getInt(key,
+                        getResources().getInteger(R.integer.color_default)));
             } else if (key.equals(PREF_KEY_HIDE_LAUNCHER_ICON)) {
                 int mode = prefs.getBoolean(key, false) ?
                         PackageManager.COMPONENT_ENABLED_STATE_DISABLED :
