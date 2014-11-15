@@ -28,11 +28,13 @@ import com.ceco.sbdp.billing.SkuDetails;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
@@ -53,6 +55,7 @@ public class Settings extends Activity {
     public static final String PREF_KEY_EDGE_MARGIN = "pref_edge_margin";
     public static final String PREF_KEY_ABOUT = "pref_about";
     public static final String PREF_KEY_ABOUT_DONATE = "pref_about_donate";
+    public static final String PREF_KEY_HIDE_LAUNCHER_ICON = "pref_hide_launcher_icon";
 
     public static final String ACTION_SETTINGS_CHANGED = "sbdp.intent.action.SETTINGS_CHANGED";
     public static final String EXTRA_MODE = "mode";
@@ -228,6 +231,13 @@ public class Settings extends Activity {
             } else if (key.equals(PREF_KEY_EDGE_MARGIN)) {
                 intent.setAction(ACTION_SETTINGS_CHANGED);
                 intent.putExtra(EXTRA_EDGE_MARGIN,Integer.valueOf(prefs.getString(key, "0")));
+            } else if (key.equals(PREF_KEY_HIDE_LAUNCHER_ICON)) {
+                int mode = prefs.getBoolean(key, false) ?
+                        PackageManager.COMPONENT_ENABLED_STATE_DISABLED :
+                            PackageManager.COMPONENT_ENABLED_STATE_ENABLED;
+                getActivity().getPackageManager().setComponentEnabledSetting(
+                        new ComponentName(getActivity(), "com.ceco.sbdp.SettingsAlias"),
+                        mode, PackageManager.DONT_KILL_APP);
             }
 
             if (ACTION_SETTINGS_CHANGED.equals(intent.getAction())) {

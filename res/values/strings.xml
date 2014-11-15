@@ -47,4 +47,8 @@
     <string name="donate_transaction_error">Donation transaction was unsuccessful</string>
     <string name="donate_transaction_ok">Donation transaction was successful. Thank you very much for your support!</string>
 
+    <!-- Hide launcher icon -->
+    <string name="pref_hide_launcher_icon_title">Hide launcher icon</string>
+    <string name="pref_hide_launcher_icon_summary">May require launcher restart</string>
+
 </resources>
