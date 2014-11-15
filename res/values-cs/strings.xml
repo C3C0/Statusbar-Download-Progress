@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ * Copyright (C) 2014 Peter Gregus (C3C076@xda)
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+<resources>
+
+    <string name="app_name">Indikátor stahování</string>
+    <string name="app_desc">Zobrazí indikátor stahování ve stavové liště pro stažení vyřizovány přes
+        standardní Android manažer stažení</string>
+
+    <string name="module_not_active">Modul není aktivní. Použijte Xposed Installer pro aktivaci modulu a
+        následně restartujte zařízení.</string>
+
+    <!-- Options -->
+    <string name="pref_cat_options_title">Nastavení</string>
+
+    <string name="pref_mode_title">Režim zobrazení</string>
+    <string name="sb_download_progress_off">Vypnutý</string>
+    <string name="sb_download_progress_top">Horní hrana lišty</string>
+    <string name="sb_download_progress_bottom">Spodní hrana lišty</string>
+
+    <string name="pref_edge_margin_title">Okraj hrany</string>
+    <string name="edge_margin_0">Žádný</string>
+    <string name="edge_margin_1">1dp</string>
+    <string name="edge_margin_2">2dp</string>
+    <string name="edge_margin_3">3dp</string>
+
+    <!-- About -->
+    <string name="pref_cat_about_title">O aplikaci</string>
+    <string name="pref_about_summary">Naprogramoval C3C076@XDA. Dotykem otevřete oficiální stránku podpory.</string>
+    <string name="pref_about_donate_title">Podpořit vývojáře</string>
+    <string name="pref_about_donate_waiting">Čeká se na účtovací služby Google&#8230;</string>
+    <string name="pref_about_donate_error">Chyba kontaktování účtovacích služeb Google</string>
+    <string name="pref_about_donate_no_items">Momentálně nejsou k dispozici žádné položky pro podporu vývojáře</string>
+    <string name="pref_about_donate_summary">Dotykem spustíte proces volby a odeslání finančního příspěvku</string>
+    <string name="donate_transaction_error">Transakce nebyla úspěšná</string>
+    <string name="donate_transaction_ok">Transakce byla úspěšná. Děkuji za podporu!</string>
+
+    <!-- Hide launcher icon -->
+    <string name="pref_hide_launcher_icon_title">Skrýt ikonu ve spouštěči aplikací</string>
+    <string name="pref_hide_launcher_icon_summary">Může vyžadovat restart spouštěče aplikací</string>
+
+    <!-- Progress bar color -->
+    <string name="dialog_color_picker">Výběr barvy</string>
+    <string name="press_color_to_apply">Dotykem potvrdíte barvu</string>
+    <string name="pref_color_title">Barva indikátoru</string>
+
+</resources>
