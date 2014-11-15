@@ -33,7 +33,9 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
     public static final String CLASS_PHONE_STATUSBAR_VIEW = "com.android.systemui.statusbar.phone.PhoneStatusBarView";
     public static final String CLASS_PHONE_STATUSBAR = "com.android.systemui.statusbar.phone.PhoneStatusBar";
     public static final String CLASS_BASE_STATUSBAR = "com.android.systemui.statusbar.BaseStatusBar";
-    public static final String CLASS_STATUSBAR_NOTIF = "android.service.notification.StatusBarNotification";
+    public static final String CLASS_STATUSBAR_NOTIF = Build.VERSION.SDK_INT > 17 ?
+            "android.service.notification.StatusBarNotification" :
+                "com.android.internal.statusbar.StatusBarNotification";
     public static final boolean DEBUG = false;
 
     public static void log(String message) {
