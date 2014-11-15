@@ -44,5 +44,14 @@
     <string name="pref_about_donate_summary">Appuyez pour lancer le don via l\'appli.</string>
     <string name="donate_transaction_error">La transaction a échoué.</string>
     <string name="donate_transaction_ok">La transaction s\'est effectuée avec succès. Merci beaucoup pour votre don !</string>
+    
+    <!-- Hide launcher icon -->
+    <string name="pref_hide_launcher_icon_title">Masquer l\'icône</string>
+    <string name="pref_hide_launcher_icon_summary">Peut nécessiter un redémarrage du lanceur</string>
+
+    <!-- Progress bar color -->
+    <string name="dialog_color_picker">Définir une couleur</string>
+    <string name="press_color_to_apply">Appuyer sur une couleur</string>
+    <string name="pref_color_title">Couleur</string>    
 
 </resources>
