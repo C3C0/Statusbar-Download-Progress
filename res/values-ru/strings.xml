@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="url_xda">http://forum.xda-developers.com/xposed/modules/app-statusbar-download-progress-v1-0-t2933867</string>
+    <string name="app_name">Statusbar download progress</string>
+    <string name="app_desc">Показывает индикатор выполнения загрузки в строке состояния для загрузки, осуществляемых через стандартный менеджер загрузки Android</string>
+    <string name="module_not_active">Модуль не активен. Используйте ЭXposed Installer, чтобы активировать модуль, а затем перезагрузить устройство.</string>
+    <string name="pref_cat_options_title">Опции</string>
+    <string name="pref_mode_title">Режим</string>
+    <string name="sb_download_progress_off">Отключено</string>
+    <string name="sb_download_progress_top">Верxний край</string>
+    <string name="sb_download_progress_bottom">Нижний край</string>
+    <string name="pref_edge_margin_title">Отступ от края</string>
+    <string name="edge_margin_0">Нету</string>
+    <string name="edge_margin_1">1dp</string>
+    <string name="edge_margin_2">2dp</string>
+    <string name="edge_margin_3">3dp</string>
+    <string name="pref_cat_about_title">О модуле</string>
+    <string name="pref_about_summary">Разработано C3C076@XDA. Нажмите, чтобы посетить официальную стратицу поддержку.</string>
+    <string name="pref_about_donate_title">Поддержите разработчика</string>
+    <string name="pref_about_donate_waiting">Ожидание ответа от Google billing services…</string>
+    <string name="pref_about_donate_error">Ошибка соединения с Google billing services</string>
+    <string name="pref_about_donate_no_items">В настоящее время пожертвование не доступны</string>
+    <string name="pref_about_donate_summary">Нажмите, чтобы начать пожертвование</string>
+    <string name="donate_transaction_error">Пожертвование не удалось</string>
+    <string name="donate_transaction_ok">Пожертвование было успешно. Спасибо вам большое за вашу поддержку!</string>
+    <string name="pref_hide_launcher_icon_title">Скрыть значок запуска</string>
+    <string name="pref_hide_launcher_icon_summary">Может потребоваться перезапуск launcherа</string>
+    <string name="dialog_color_picker">Выберите цвет</string>
+    <string name="press_color_to_apply">Нажмите на цвет, чтобы применить</string>
+    <string name="pref_color_title">Цвет</string>
+</resources>
