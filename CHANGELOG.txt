@@ -1,3 +1,10 @@
+Changelog 1.2 - 03/12/2014
+--------------------------------------
+- Added support for Bluetooth transfers
+- Added support for Firefox browser
+- Added support for Chrome's "Save link"
+- Added Russian translations (thanks to GromozavrStas)
+
 Changelog 1.1 - 15/11/2014
 --------------------------------------
 - Fixed compatibility on Android 4.1 and 4.2
