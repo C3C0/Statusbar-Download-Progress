@@ -43,7 +43,8 @@ public class StatusbarDownloadProgressView extends View {
             "com.android.providers.downloads",
             "com.android.bluetooth",
             "com.mediatek.bluetooth",
-            "com.android.chrome"
+            "com.android.chrome",
+            "org.mozilla.firefox"
     ));
 
     private enum Mode { OFF, TOP, BOTTOM };
