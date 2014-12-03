@@ -16,6 +16,8 @@
 package com.ceco.sbdp;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
@@ -37,7 +39,11 @@ import android.widget.FrameLayout;
 import android.widget.RemoteViews;
 
 public class StatusbarDownloadProgressView extends View {
-    public static final String PACKAGE_NAME_DOWNLOAD_PROVIDER = "com.android.providers.downloads";
+    public static final List<String> SUPPORTED_PACKAGES = new ArrayList<String>(Arrays.asList(
+            "com.android.providers.downloads",
+            "com.android.bluetooth",
+            "com.mediatek.bluetooth"
+    ));
 
     private enum Mode { OFF, TOP, BOTTOM };
     private Mode mMode;
@@ -98,7 +104,7 @@ public class StatusbarDownloadProgressView extends View {
         if (mMode == Mode.OFF) return;
 
         if (!verifyNotification(statusBarNotif)) {
-            if (ModSbdp.DEBUG) ModSbdp.log("onNotificationAdded: ignoring non-download provider notification");
+            if (ModSbdp.DEBUG) ModSbdp.log("onNotificationAdded: ignoring unsupported notification");
             return;
         }
 
@@ -125,7 +131,7 @@ public class StatusbarDownloadProgressView extends View {
         }
 
         if (!verifyNotification(statusBarNotif)) {
-            if (ModSbdp.DEBUG) ModSbdp.log("onNotificationUpdated: ignoring non-download provider notification");
+            if (ModSbdp.DEBUG) ModSbdp.log("onNotificationUpdated: ignoring unsupported notification");
             return;
         }
 
@@ -139,7 +145,7 @@ public class StatusbarDownloadProgressView extends View {
         if (mMode == Mode.OFF) return;
 
         if (!verifyNotification(statusBarNotif)) {
-            if (ModSbdp.DEBUG) ModSbdp.log("onNotificationRemoved: ignoring non-download provider notification");
+            if (ModSbdp.DEBUG) ModSbdp.log("onNotificationRemoved: ignoring unsupported notification");
             return;
         }
 
@@ -157,24 +163,26 @@ public class StatusbarDownloadProgressView extends View {
         if (statusBarNotif == null) return false;
         String pkgName = (String) XposedHelpers.getObjectField(statusBarNotif, "pkg");
         if (ModSbdp.DEBUG) ModSbdp.log("verifyNotification: " + pkgName);
-        if (PACKAGE_NAME_DOWNLOAD_PROVIDER.equals(pkgName)) {
+        if (SUPPORTED_PACKAGES.contains(pkgName)) {
             return (Boolean) XposedHelpers.callMethod(statusBarNotif, "isOngoing");
         }
         return false;
     }
 
     protected String getIdentifier(Object statusBarNotif) {
-        if (Build.VERSION.SDK_INT > 17) {
+        String pkgName = (String) XposedHelpers.getObjectField(statusBarNotif, "pkg");
+        if (Build.VERSION.SDK_INT > 17 && SUPPORTED_PACKAGES.get(0).equals(pkgName)) {
             String tag = (String) XposedHelpers.getObjectField(statusBarNotif, "tag");
             if (tag != null && tag.contains(":")) {
-                String id = tag.substring(tag.indexOf(":")+1);
+                String id = pkgName + ":" + tag.substring(tag.indexOf(":")+1);
                 if (ModSbdp.DEBUG) ModSbdp.log("getIdentifier: " + id);
                 return id;
             }
             if (ModSbdp.DEBUG) ModSbdp.log("getIdentifier: Unexpected notification tag: " + tag);
             return null;
         } else {
-            String id = String.valueOf(XposedHelpers.getIntField(statusBarNotif, "id"));
+            String id = pkgName + ":" +
+                    String.valueOf(XposedHelpers.getIntField(statusBarNotif, "id"));
             if (ModSbdp.DEBUG) ModSbdp.log("getIdentifier: " + id);
             return id;
         }
