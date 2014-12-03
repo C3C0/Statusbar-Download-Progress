@@ -42,7 +42,8 @@ public class StatusbarDownloadProgressView extends View {
     public static final List<String> SUPPORTED_PACKAGES = new ArrayList<String>(Arrays.asList(
             "com.android.providers.downloads",
             "com.android.bluetooth",
-            "com.mediatek.bluetooth"
+            "com.mediatek.bluetooth",
+            "com.android.chrome"
     ));
 
     private enum Mode { OFF, TOP, BOTTOM };
