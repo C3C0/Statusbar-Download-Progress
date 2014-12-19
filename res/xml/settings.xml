@@ -39,6 +39,12 @@
             android:defaultValue="@integer/color_default"
             alphaSlider="false" />
 
+       <CheckBoxPreference
+            android:key="pref_god_mode"
+            android:title="@string/pref_god_mode_title"
+            android:summary="@string/pref_god_mode_summary"
+            android:defaultValue="false" />
+
     </PreferenceCategory>
 
     <PreferenceCategory

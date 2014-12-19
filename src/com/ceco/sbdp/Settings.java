@@ -54,6 +54,7 @@ public class Settings extends Activity {
     public static final String PREF_KEY_MODE = "pref_mode";
     public static final String PREF_KEY_EDGE_MARGIN = "pref_edge_margin";
     public static final String PREF_KEY_COLOR = "pref_color";
+    public static final String PREF_KEY_GOD_MODE = "pref_god_mode";
 
     public static final String PREF_KEY_ABOUT = "pref_about";
     public static final String PREF_KEY_ABOUT_DONATE = "pref_about_donate";
@@ -63,6 +64,7 @@ public class Settings extends Activity {
     public static final String EXTRA_MODE = "mode";
     public static final String EXTRA_EDGE_MARGIN = "edgeMargin";
     public static final String EXTRA_COLOR = "color";
+    public static final String EXTRA_GOD_MODE = "godMode";
 
     private static SettingsFragment sSettingsFragment;
 
@@ -238,6 +240,9 @@ public class Settings extends Activity {
                 intent.setAction(ACTION_SETTINGS_CHANGED);
                 intent.putExtra(EXTRA_COLOR, prefs.getInt(key,
                         getResources().getInteger(R.integer.color_default)));
+            } else if (key.equals(PREF_KEY_GOD_MODE)) {
+                intent.setAction(ACTION_SETTINGS_CHANGED);
+                intent.putExtra(EXTRA_GOD_MODE, prefs.getBoolean(key, false));
             } else if (key.equals(PREF_KEY_HIDE_LAUNCHER_ICON)) {
                 int mode = prefs.getBoolean(key, false) ?
                         PackageManager.COMPONENT_ENABLED_STATE_DISABLED :

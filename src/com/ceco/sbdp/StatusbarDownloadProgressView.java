@@ -47,10 +47,27 @@ public class StatusbarDownloadProgressView extends View {
             "org.mozilla.firefox"
     ));
 
+    class ProgressInfo {
+        boolean hasProgressBar;
+        int progress;
+        int max;
+
+        public ProgressInfo(boolean hasProgressBar, int progress, int max) {
+            this.hasProgressBar = hasProgressBar;
+            this.progress = progress;
+            this.max = max;
+        }
+
+        public float getFraction() {
+            return (max > 0 ? ((float)progress/(float)max) : 0f);
+        }
+    }
+
     private enum Mode { OFF, TOP, BOTTOM };
     private Mode mMode;
     private int mEdgeMarginPx;
     private String mId;
+    private boolean mGodMode;
 
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -59,8 +76,7 @@ public class StatusbarDownloadProgressView extends View {
                 if (intent.hasExtra(Settings.EXTRA_MODE)) {
                     mMode = Mode.valueOf(intent.getStringExtra(Settings.EXTRA_MODE));
                     if (mMode == Mode.OFF) {
-                        mId = null;
-                        updateProgress(null);
+                        stopTracking();
                     } else {
                         updatePosition();
                     }
@@ -76,6 +92,9 @@ public class StatusbarDownloadProgressView extends View {
                             Build.VERSION.SDK_INT >= 19 ? Color.WHITE : 
                                 getResources().getColor(android.R.color.holo_blue_dark)));
                 }
+                if (intent.hasExtra(Settings.EXTRA_GOD_MODE)) {
+                    mGodMode = intent.getBooleanExtra(Settings.EXTRA_GOD_MODE, false);
+                }
             }
         }
     };
@@ -88,6 +107,7 @@ public class StatusbarDownloadProgressView extends View {
         mEdgeMarginPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 Integer.valueOf(prefs.getString(Settings.PREF_KEY_EDGE_MARGIN, "0")),
                 getResources().getDisplayMetrics());
+        mGodMode = prefs.getBoolean(Settings.PREF_KEY_GOD_MODE, false);
 
         int heightPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1,
                 getResources().getDisplayMetrics());
@@ -100,6 +120,11 @@ public class StatusbarDownloadProgressView extends View {
         updatePosition();
 
         context.registerReceiver(mBroadcastReceiver, new IntentFilter(Settings.ACTION_SETTINGS_CHANGED));
+    }
+
+    private void stopTracking() {
+        mId = null;
+        updateProgress(null);
     }
 
     public void onNotificationAdded(Object statusBarNotif) {
@@ -132,46 +157,44 @@ public class StatusbarDownloadProgressView extends View {
             return;
         }
 
-        if (!verifyNotification(statusBarNotif)) {
-            if (ModSbdp.DEBUG) ModSbdp.log("onNotificationUpdated: ignoring unsupported notification");
-            return;
-        }
-
         if (mId.equals(getIdentifier(statusBarNotif))) {
-            if (ModSbdp.DEBUG) ModSbdp.log("updating progress for " + mId);
-            updateProgress(statusBarNotif);
+            // if notification became clearable, stop tracking immediately
+            if ((Boolean) XposedHelpers.callMethod(statusBarNotif, "isClearable")) {
+                if (ModSbdp.DEBUG) ModSbdp.log("onNotificationUpdated: notification became clearable - stopping tracking");
+                stopTracking();
+            } else {
+                if (ModSbdp.DEBUG) ModSbdp.log("updating progress for " + mId);
+                updateProgress(statusBarNotif);
+            }
         }
     }
 
     public void onNotificationRemoved(Object statusBarNotif) {
         if (mMode == Mode.OFF) return;
 
-        if (!verifyNotification(statusBarNotif)) {
-            if (ModSbdp.DEBUG) ModSbdp.log("onNotificationRemoved: ignoring unsupported notification");
-            return;
-        }
-
         if (mId == null) {
             if (ModSbdp.DEBUG) ModSbdp.log("onNotificationRemoved: no download registered");
             return;
         } else if (mId.equals(getIdentifier(statusBarNotif))) {
             if (ModSbdp.DEBUG) ModSbdp.log("finishing progress for " + mId);
-            mId = null;
-            updateProgress(null);
+            stopTracking();
         }
     }
 
     private boolean verifyNotification(Object statusBarNotif) {
-        if (statusBarNotif == null) return false;
-        String pkgName = (String) XposedHelpers.getObjectField(statusBarNotif, "pkg");
-        if (ModSbdp.DEBUG) ModSbdp.log("verifyNotification: " + pkgName);
-        if (SUPPORTED_PACKAGES.contains(pkgName)) {
-            return (Boolean) XposedHelpers.callMethod(statusBarNotif, "isOngoing");
+        if (statusBarNotif == null || (Boolean) XposedHelpers.callMethod(statusBarNotif, "isClearable")) {
+            return false;
         }
-        return false;
+
+        String pkgName = (String) XposedHelpers.getObjectField(statusBarNotif, "pkg");
+        Notification n = (Notification) XposedHelpers.getObjectField(statusBarNotif, "notification");
+        return (n != null && 
+               (SUPPORTED_PACKAGES.contains(pkgName) || mGodMode) &&
+                getProgressInfo(n).hasProgressBar);
     }
 
     protected String getIdentifier(Object statusBarNotif) {
+        if (statusBarNotif == null) return null;
         String pkgName = (String) XposedHelpers.getObjectField(statusBarNotif, "pkg");
         if (Build.VERSION.SDK_INT > 17 && SUPPORTED_PACKAGES.get(0).equals(pkgName)) {
             String tag = (String) XposedHelpers.getObjectField(statusBarNotif, "tag");
@@ -195,7 +218,7 @@ public class StatusbarDownloadProgressView extends View {
         int newWidth = 0;
         if (statusBarNotif != null) {
             Notification n = (Notification) XposedHelpers.getObjectField(statusBarNotif, "notification");
-            newWidth = (int) ((float)maxWidth * getProgress(n));
+            newWidth = (int) ((float)maxWidth * getProgressInfo(n).getFraction());
         }
         if (ModSbdp.DEBUG) ModSbdp.log("updateProgress: maxWidth=" + maxWidth + "; newWidth=" + newWidth);
         ViewGroup.LayoutParams lp = (ViewGroup.LayoutParams) getLayoutParams();
@@ -204,20 +227,20 @@ public class StatusbarDownloadProgressView extends View {
         setVisibility(newWidth > 0 ? View.VISIBLE : View.GONE);
     }
 
-    private float getProgress(Notification n) {
-        int total = 0;
-        int current = 0;
+    private ProgressInfo getProgressInfo(Notification n) {
+        ProgressInfo pInfo = new ProgressInfo(false, 0, 0);
+        if (n == null) return pInfo;
 
         // We have to extract the information from the content view
         RemoteViews views = n.bigContentView;
         if (views == null) views = n.contentView;
-        if (views == null) return 0f;
+        if (views == null) return pInfo;
 
         try {
             @SuppressWarnings("unchecked")
             ArrayList<Parcelable> actions = (ArrayList<Parcelable>) 
                 XposedHelpers.getObjectField(views, "mActions");
-            if (actions == null) return 0f;
+            if (actions == null) return pInfo;
 
             for (Parcelable p : actions) {
                 Parcel parcel = Parcel.obtain();
@@ -231,19 +254,17 @@ public class StatusbarDownloadProgressView extends View {
                     continue;
                 }
 
-                // Check whether View ID is a progress bar
-                int id = parcel.readInt();
-                if (id == android.R.id.progress) {
-                    String methodName = parcel.readString();
-                    if ("setMax".equals(methodName)) {
-                        parcel.readInt(); // skip type value
-                        total = parcel.readInt();
-                        if (ModSbdp.DEBUG) ModSbdp.log("getProgress: total=" + total);
-                    } else if ("setProgress".equals(methodName)) {
-                        parcel.readInt(); // skip type value
-                        current = parcel.readInt();
-                        if (ModSbdp.DEBUG) ModSbdp.log("getProgress: current=" + current);
-                    }
+                parcel.readInt(); // skip View ID
+                String methodName = parcel.readString();
+                if ("setMax".equals(methodName)) {
+                    parcel.readInt(); // skip type value
+                    pInfo.max = parcel.readInt();
+                    if (ModSbdp.DEBUG) ModSbdp.log("getProgress: total=" + pInfo.max);
+                } else if ("setProgress".equals(methodName)) {
+                    parcel.readInt(); // skip type value
+                    pInfo.progress = parcel.readInt();
+                    pInfo.hasProgressBar = true;
+                    if (ModSbdp.DEBUG) ModSbdp.log("getProgress: current=" + pInfo.progress);
                 }
 
                 parcel.recycle();
@@ -252,7 +273,7 @@ public class StatusbarDownloadProgressView extends View {
             XposedBridge.log(t);
         }
 
-        return (total > 0 ? ((float)current/(float)total) : 0f);
+        return pInfo;
     }
 
     private void updatePosition() {

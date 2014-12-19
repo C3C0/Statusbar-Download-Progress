@@ -56,4 +56,8 @@
     <string name="press_color_to_apply">Press on color to apply</string>
     <string name="pref_color_title">Color</string>
 
+    <!-- God mode -->
+    <string name="pref_god_mode_title">God mode</string>
+    <string name="pref_god_mode_summary">Attempts to show progress bar for any app having ongoing notification that contains progress bar</string>
+
 </resources>
