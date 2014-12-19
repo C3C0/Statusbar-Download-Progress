@@ -1,3 +1,8 @@
+Changelog 1.3 - 19/12/2014
+--------------------------------------
+- Added option for God mode:
+--- attempts to show progress bar for any app having ongoing notification that contains progress bar
+
 Changelog 1.2 - 03/12/2014
 --------------------------------------
 - Added support for Bluetooth transfers
