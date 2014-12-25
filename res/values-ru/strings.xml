@@ -28,4 +28,6 @@
     <string name="dialog_color_picker">Выберите цвет</string>
     <string name="press_color_to_apply">Нажмите на цвет, чтобы применить</string>
     <string name="pref_color_title">Цвет</string>
+    <string name="pref_god_mode_title">Режим бога</string>
+    <string name="pref_god_mode_summary">Пытатся показать прогресс бар для любого приложения, имеющего постоянные уведомления, содержащее индикатор выполнения</string>
 </resources>
