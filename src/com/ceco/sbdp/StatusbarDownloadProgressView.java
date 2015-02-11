@@ -34,7 +34,6 @@ import android.os.Parcelable;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.RemoteViews;
 
@@ -111,11 +110,14 @@ public class StatusbarDownloadProgressView extends View {
 
         int heightPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1,
                 getResources().getDisplayMetrics());
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(0, heightPx);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, heightPx);
         setLayoutParams(lp);
         setBackgroundColor(prefs.getInt(Settings.PREF_KEY_COLOR, 
                 Build.VERSION.SDK_INT >= 19 ? Color.WHITE : 
                     getResources().getColor(android.R.color.holo_blue_dark)));
+        setPivotX(0);
+        setScaleX(0);
         setVisibility(View.GONE);
         updatePosition();
 
@@ -214,17 +216,14 @@ public class StatusbarDownloadProgressView extends View {
     }
 
     private void updateProgress(Object statusBarNotif) {
-        int maxWidth = ((View) getParent()).getWidth();
-        int newWidth = 0;
+        float newScale = 0;
         if (statusBarNotif != null) {
             Notification n = (Notification) XposedHelpers.getObjectField(statusBarNotif, "notification");
-            newWidth = (int) ((float)maxWidth * getProgressInfo(n).getFraction());
+            newScale = getProgressInfo(n).getFraction();
         }
-        if (ModSbdp.DEBUG) ModSbdp.log("updateProgress: maxWidth=" + maxWidth + "; newWidth=" + newWidth);
-        ViewGroup.LayoutParams lp = (ViewGroup.LayoutParams) getLayoutParams();
-        lp.width = newWidth;
-        setLayoutParams(lp);
-        setVisibility(newWidth > 0 ? View.VISIBLE : View.GONE);
+        if (ModSbdp.DEBUG) ModSbdp.log("updateProgress: newScale=" + newScale);
+        setScaleX(newScale);
+        setVisibility(newScale > 0 ? View.VISIBLE : View.GONE);
     }
 
     private ProgressInfo getProgressInfo(Notification n) {
