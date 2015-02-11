@@ -75,6 +75,7 @@ public class StatusbarDownloadProgressView extends View {
     private boolean mAnimated;
     private ObjectAnimator mAnimator;
     private boolean mCentered;
+    private int mHeightPx;
 
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -109,6 +110,12 @@ public class StatusbarDownloadProgressView extends View {
                     mCentered = intent.getBooleanExtra(Settings.EXTRA_CENTERED, false);
                     setPivotX(mCentered ? getWidth()/2f : 0f);
                 }
+                if (intent.hasExtra(Settings.EXTRA_THICKNESS)) {
+                    mHeightPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                            intent.getIntExtra(Settings.EXTRA_THICKNESS, 2),
+                            getResources().getDisplayMetrics());
+                    updatePosition();
+                }
             }
         }
     };
@@ -124,11 +131,12 @@ public class StatusbarDownloadProgressView extends View {
         mGodMode = prefs.getBoolean(Settings.PREF_KEY_GOD_MODE, false);
         mAnimated = prefs.getBoolean(Settings.PREF_KEY_ANIMATED, true);
         mCentered = prefs.getBoolean(Settings.PREF_KEY_CENTERED, false);
-
-        int heightPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1,
+        mHeightPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                prefs.getInt(Settings.PREF_KEY_THICKNESS, 2),
                 getResources().getDisplayMetrics());
+
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT, heightPx);
+                FrameLayout.LayoutParams.MATCH_PARENT, mHeightPx);
         setLayoutParams(lp);
         setBackgroundColor(prefs.getInt(Settings.PREF_KEY_COLOR, 
                 Build.VERSION.SDK_INT >= 19 ? Color.WHITE : 
@@ -329,6 +337,7 @@ public class StatusbarDownloadProgressView extends View {
     private void updatePosition() {
         if (mMode == Mode.OFF) return;
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
+        lp.height = mHeightPx;
         lp.gravity = mMode == Mode.TOP ? (Gravity.TOP | Gravity.START) :
             (Gravity.BOTTOM | Gravity.START);
         lp.setMargins(0, mMode == Mode.TOP ? mEdgeMarginPx : 0, 

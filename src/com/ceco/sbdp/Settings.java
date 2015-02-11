@@ -57,6 +57,7 @@ public class Settings extends Activity {
     public static final String PREF_KEY_GOD_MODE = "pref_god_mode";
     public static final String PREF_KEY_ANIMATED = "pref_animated";
     public static final String PREF_KEY_CENTERED = "pref_centered";
+    public static final String PREF_KEY_THICKNESS = "pref_thickness";
 
     public static final String PREF_KEY_ABOUT = "pref_about";
     public static final String PREF_KEY_ABOUT_DONATE = "pref_about_donate";
@@ -69,6 +70,7 @@ public class Settings extends Activity {
     public static final String EXTRA_GOD_MODE = "godMode";
     public static final String EXTRA_ANIMATED = "animated";
     public static final String EXTRA_CENTERED = "centered";
+    public static final String EXTRA_THICKNESS = "thickness";
 
     private static SettingsFragment sSettingsFragment;
 
@@ -260,6 +262,9 @@ public class Settings extends Activity {
             } else if (key.equals(PREF_KEY_CENTERED)) {
                 intent.setAction(ACTION_SETTINGS_CHANGED);
                 intent.putExtra(EXTRA_CENTERED, prefs.getBoolean(key, false));
+            } else if (key.equals(PREF_KEY_THICKNESS)) {
+                intent.setAction(ACTION_SETTINGS_CHANGED);
+                intent.putExtra(EXTRA_THICKNESS, prefs.getInt(key, 2));
             }
 
             if (ACTION_SETTINGS_CHANGED.equals(intent.getAction())) {

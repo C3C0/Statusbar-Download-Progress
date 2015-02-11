@@ -66,4 +66,7 @@
     <!-- Centered -->
     <string name="pref_centered_title">Centered</string>
 
+    <!-- Thickness -->
+    <string name="pref_thickness_title">Thickness</string>
+
 </resources>

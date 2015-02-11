@@ -33,6 +33,16 @@
             android:entryValues="@array/edge_margin_values"
             android:defaultValue="0" />
 
+       <com.ceco.sbdp.SeekBarPreference
+            android:key="pref_thickness"
+            android:title="@string/pref_thickness_title"
+            minimum="1"
+            maximum="4"
+            interval="1"
+            monitorBoxEnabled="true"
+            monitorBoxUnit="px"
+            android:defaultValue="2" />
+
        <CheckBoxPreference
             android:key="pref_centered"
             android:title="@string/pref_centered_title"
