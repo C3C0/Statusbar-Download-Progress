@@ -56,4 +56,17 @@
     <string name="press_color_to_apply">Dotykom potvrdíte farbu</string>
     <string name="pref_color_title">Farba indikátora</string>
 
+    <!-- God mode -->
+    <string name="pref_god_mode_title">Super režim</string>
+    <string name="pref_god_mode_summary">Pokúsi sa zobraziť indikátor sťahovania pre každé oznámenie obsahujúce indikátor postupu</string>
+
+    <!-- Animated -->
+    <string name="pref_animated_title">Animovaný</string>
+
+    <!-- Centered -->
+    <string name="pref_centered_title">Vycentrovaný</string>
+
+    <!-- Thickness -->
+    <string name="pref_thickness_title">Hrúbka</string>
+
 </resources>
