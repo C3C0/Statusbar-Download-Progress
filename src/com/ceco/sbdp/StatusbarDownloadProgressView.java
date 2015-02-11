@@ -22,6 +22,8 @@ import java.util.List;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -34,6 +36,7 @@ import android.os.Parcelable;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.RemoteViews;
 
@@ -45,6 +48,8 @@ public class StatusbarDownloadProgressView extends View {
             "com.android.chrome",
             "org.mozilla.firefox"
     ));
+
+    private static final int ANIM_DURATION = 400;
 
     class ProgressInfo {
         boolean hasProgressBar;
@@ -67,6 +72,8 @@ public class StatusbarDownloadProgressView extends View {
     private int mEdgeMarginPx;
     private String mId;
     private boolean mGodMode;
+    private boolean mAnimated;
+    private ObjectAnimator mAnimator;
 
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -94,6 +101,9 @@ public class StatusbarDownloadProgressView extends View {
                 if (intent.hasExtra(Settings.EXTRA_GOD_MODE)) {
                     mGodMode = intent.getBooleanExtra(Settings.EXTRA_GOD_MODE, false);
                 }
+                if (intent.hasExtra(Settings.EXTRA_ANIMATED)) {
+                    mAnimated = intent.getBooleanExtra(Settings.EXTRA_ANIMATED, true);
+                }
             }
         }
     };
@@ -107,6 +117,7 @@ public class StatusbarDownloadProgressView extends View {
                 Integer.valueOf(prefs.getString(Settings.PREF_KEY_EDGE_MARGIN, "0")),
                 getResources().getDisplayMetrics());
         mGodMode = prefs.getBoolean(Settings.PREF_KEY_GOD_MODE, false);
+        mAnimated = prefs.getBoolean(Settings.PREF_KEY_ANIMATED, true);
 
         int heightPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1,
                 getResources().getDisplayMetrics());
@@ -117,9 +128,15 @@ public class StatusbarDownloadProgressView extends View {
                 Build.VERSION.SDK_INT >= 19 ? Color.WHITE : 
                     getResources().getColor(android.R.color.holo_blue_dark)));
         setPivotX(0);
-        setScaleX(0);
+        setScaleX(0f);
         setVisibility(View.GONE);
         updatePosition();
+
+        mAnimator = new ObjectAnimator();
+        mAnimator.setTarget(this);
+        mAnimator.setInterpolator(new DecelerateInterpolator());
+        mAnimator.setDuration(ANIM_DURATION);
+        mAnimator.setRepeatCount(0);
 
         context.registerReceiver(mBroadcastReceiver, new IntentFilter(Settings.ACTION_SETTINGS_CHANGED));
     }
@@ -216,14 +233,37 @@ public class StatusbarDownloadProgressView extends View {
     }
 
     private void updateProgress(Object statusBarNotif) {
-        float newScale = 0;
         if (statusBarNotif != null) {
             Notification n = (Notification) XposedHelpers.getObjectField(statusBarNotif, "notification");
-            newScale = getProgressInfo(n).getFraction();
+            float newScaleX = getProgressInfo(n).getFraction();
+            if (ModSbdp.DEBUG) ModSbdp.log("updateProgress: newScaleX=" + newScaleX);
+            setVisibility(View.VISIBLE);
+            if (mAnimated) {
+                animateScaleTo(newScaleX);
+            } else {
+                setScaleX(newScaleX);
+            }
+        } else {
+            if (mAnimator.isStarted()) {
+                mAnimator.end();
+            }
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    setScaleX(0f);
+                    setVisibility(View.GONE);
+                }
+            }, 500);
         }
-        if (ModSbdp.DEBUG) ModSbdp.log("updateProgress: newScale=" + newScale);
-        setScaleX(newScale);
-        setVisibility(newScale > 0 ? View.VISIBLE : View.GONE);
+    }
+
+    private void animateScaleTo(float newScaleX) {
+        if (mAnimator.isStarted()) {
+            mAnimator.cancel();
+        }
+        mAnimator.setValues(PropertyValuesHolder.ofFloat("scaleX", getScaleX(), newScaleX));
+        mAnimator.start();
+        if (ModSbdp.DEBUG) ModSbdp.log("Animating to new scaleX: " + newScaleX);
     }
 
     private ProgressInfo getProgressInfo(Notification n) {

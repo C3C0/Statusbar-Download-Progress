@@ -40,6 +40,11 @@
             alphaSlider="false" />
 
        <CheckBoxPreference
+            android:key="pref_animated"
+            android:title="@string/pref_animated_title"
+            android:defaultValue="true" />
+
+       <CheckBoxPreference
             android:key="pref_god_mode"
             android:title="@string/pref_god_mode_title"
             android:summary="@string/pref_god_mode_summary"
