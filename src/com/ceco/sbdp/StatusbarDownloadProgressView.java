@@ -74,6 +74,7 @@ public class StatusbarDownloadProgressView extends View {
     private boolean mGodMode;
     private boolean mAnimated;
     private ObjectAnimator mAnimator;
+    private boolean mCentered;
 
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -104,6 +105,10 @@ public class StatusbarDownloadProgressView extends View {
                 if (intent.hasExtra(Settings.EXTRA_ANIMATED)) {
                     mAnimated = intent.getBooleanExtra(Settings.EXTRA_ANIMATED, true);
                 }
+                if (intent.hasExtra(Settings.EXTRA_CENTERED)) {
+                    mCentered = intent.getBooleanExtra(Settings.EXTRA_CENTERED, false);
+                    setPivotX(mCentered ? getWidth()/2f : 0f);
+                }
             }
         }
     };
@@ -118,6 +123,7 @@ public class StatusbarDownloadProgressView extends View {
                 getResources().getDisplayMetrics());
         mGodMode = prefs.getBoolean(Settings.PREF_KEY_GOD_MODE, false);
         mAnimated = prefs.getBoolean(Settings.PREF_KEY_ANIMATED, true);
+        mCentered = prefs.getBoolean(Settings.PREF_KEY_CENTERED, false);
 
         int heightPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1,
                 getResources().getDisplayMetrics());
@@ -127,7 +133,6 @@ public class StatusbarDownloadProgressView extends View {
         setBackgroundColor(prefs.getInt(Settings.PREF_KEY_COLOR, 
                 Build.VERSION.SDK_INT >= 19 ? Color.WHITE : 
                     getResources().getColor(android.R.color.holo_blue_dark)));
-        setPivotX(0);
         setScaleX(0f);
         setVisibility(View.GONE);
         updatePosition();
@@ -139,6 +144,12 @@ public class StatusbarDownloadProgressView extends View {
         mAnimator.setRepeatCount(0);
 
         context.registerReceiver(mBroadcastReceiver, new IntentFilter(Settings.ACTION_SETTINGS_CHANGED));
+    }
+
+    @Override
+    public void onSizeChanged(int w, int h, int oldw, int oldh) {
+        if (ModSbdp.DEBUG) ModSbdp.log("w=" + w + "; h=" + h);
+        setPivotX(mCentered ? w/2f : 0f);
     }
 
     private void stopTracking() {

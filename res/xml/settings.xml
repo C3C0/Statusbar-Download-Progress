@@ -33,6 +33,11 @@
             android:entryValues="@array/edge_margin_values"
             android:defaultValue="0" />
 
+       <CheckBoxPreference
+            android:key="pref_centered"
+            android:title="@string/pref_centered_title"
+            android:defaultValue="false" />
+
        <net.margaritov.preference.colorpicker.ColorPickerPreference
             android:key="pref_color"
             android:title="@string/pref_color_title" 

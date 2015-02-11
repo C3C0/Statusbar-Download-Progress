@@ -63,4 +63,7 @@
     <!-- Animated -->
     <string name="pref_animated_title">Animated</string>
 
+    <!-- Centered -->
+    <string name="pref_centered_title">Centered</string>
+
 </resources>
