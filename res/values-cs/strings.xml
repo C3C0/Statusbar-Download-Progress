@@ -31,10 +31,6 @@
     <string name="sb_download_progress_bottom">Spodní hrana lišty</string>
 
     <string name="pref_edge_margin_title">Okraj hrany</string>
-    <string name="edge_margin_0">Žádný</string>
-    <string name="edge_margin_1">1dp</string>
-    <string name="edge_margin_2">2dp</string>
-    <string name="edge_margin_3">3dp</string>
 
     <!-- About -->
     <string name="pref_cat_about_title">O aplikaci</string>

@@ -26,11 +26,14 @@
             android:entryValues="@array/sb_download_progress_values"
             android:defaultValue="TOP" />
 
-       <ListPreference 
-            android:key="pref_edge_margin"
+       <com.ceco.sbdp.SeekBarPreference
+            android:key="pref_edge_margin2"
             android:title="@string/pref_edge_margin_title"
-            android:entries="@array/edge_margin_entries"
-            android:entryValues="@array/edge_margin_values"
+            minimum="0"
+            maximum="3"
+            interval="1"
+            monitorBoxEnabled="true"
+            monitorBoxUnit="px"
             android:defaultValue="0" />
 
        <com.ceco.sbdp.SeekBarPreference

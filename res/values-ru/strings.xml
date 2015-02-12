@@ -9,10 +9,6 @@
     <string name="sb_download_progress_top">Верxний край</string>
     <string name="sb_download_progress_bottom">Нижний край</string>
     <string name="pref_edge_margin_title">Отступ от края</string>
-    <string name="edge_margin_0">Нету</string>
-    <string name="edge_margin_1">1dp</string>
-    <string name="edge_margin_2">2dp</string>
-    <string name="edge_margin_3">3dp</string>
     <string name="pref_cat_about_title">О модуле</string>
     <string name="pref_about_summary">Разработано C3C076@XDA. Нажмите, чтобы посетить официальную стратицу поддержку.</string>
     <string name="pref_about_donate_title">Поддержите разработчика</string>

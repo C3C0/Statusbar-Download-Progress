@@ -126,7 +126,7 @@ public class StatusbarDownloadProgressView extends View {
         XSharedPreferences prefs = new XSharedPreferences(ModSbdp.PACKAGE_NAME_MODULE);
         mMode = Mode.valueOf(prefs.getString(Settings.PREF_KEY_MODE, "TOP"));
         mEdgeMarginPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                Integer.valueOf(prefs.getString(Settings.PREF_KEY_EDGE_MARGIN, "0")),
+                prefs.getInt(Settings.PREF_KEY_EDGE_MARGIN, 0),
                 getResources().getDisplayMetrics());
         mGodMode = prefs.getBoolean(Settings.PREF_KEY_GOD_MODE, false);
         mAnimated = prefs.getBoolean(Settings.PREF_KEY_ANIMATED, true);

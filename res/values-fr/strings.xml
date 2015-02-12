@@ -29,10 +29,6 @@
     <string name="sb_download_progress_bottom">Bord inférieur</string>
     
     <string name="pref_edge_margin_title">Taille de la barre</string>
-    <string name="edge_margin_0">Masquer</string>
-    <string name="edge_margin_1">1dp</string>
-    <string name="edge_margin_2">2dp</string>
-    <string name="edge_margin_3">3dp</string>
 
     <!-- About -->
     <string name="pref_cat_about_title">À propos</string>

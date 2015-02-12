@@ -52,7 +52,7 @@ import android.widget.Toast;
 public class Settings extends Activity {
     public static final String PREF_CAT_KEY_OPTIONS = "pref_cat_options";
     public static final String PREF_KEY_MODE = "pref_mode";
-    public static final String PREF_KEY_EDGE_MARGIN = "pref_edge_margin";
+    public static final String PREF_KEY_EDGE_MARGIN = "pref_edge_margin2";
     public static final String PREF_KEY_COLOR = "pref_color";
     public static final String PREF_KEY_GOD_MODE = "pref_god_mode";
     public static final String PREF_KEY_ANIMATED = "pref_animated";
@@ -137,7 +137,6 @@ public class Settings extends Activity {
         private SharedPreferences mPrefs;
         private PreferenceCategory mPrefCatOptions;
         private ListPreference mPrefMode;
-        private ListPreference mPrefEdgeMargin;
         private Preference mPrefAbout;
         private ListPreference mPrefAboutDonate;
         private IabHelper mIabHelper; 
@@ -157,7 +156,6 @@ public class Settings extends Activity {
 
             mPrefCatOptions = (PreferenceCategory) findPreference(PREF_CAT_KEY_OPTIONS);
             mPrefMode = (ListPreference) findPreference(PREF_KEY_MODE);
-            mPrefEdgeMargin = (ListPreference) findPreference(PREF_KEY_EDGE_MARGIN);
 
             mPrefAbout = findPreference(PREF_KEY_ABOUT);
             String version = "";
@@ -180,7 +178,6 @@ public class Settings extends Activity {
 
         protected void updateSummaries() {
             mPrefMode.setSummary(mPrefMode.getEntry());
-            mPrefEdgeMargin.setSummary(mPrefEdgeMargin.getEntry());
         }
 
         @Override
@@ -241,7 +238,7 @@ public class Settings extends Activity {
                 intent.putExtra(EXTRA_MODE, prefs.getString(key, "TOP"));
             } else if (key.equals(PREF_KEY_EDGE_MARGIN)) {
                 intent.setAction(ACTION_SETTINGS_CHANGED);
-                intent.putExtra(EXTRA_EDGE_MARGIN,Integer.valueOf(prefs.getString(key, "0")));
+                intent.putExtra(EXTRA_EDGE_MARGIN, prefs.getInt(key, 0));
             } else if (key.equals(PREF_KEY_COLOR)) {
                 intent.setAction(ACTION_SETTINGS_CHANGED);
                 intent.putExtra(EXTRA_COLOR, prefs.getInt(key,

@@ -27,20 +27,6 @@
         <item>BOTTOM</item>
     </string-array>
 
-    <string-array name="edge_margin_entries" translatable="false">
-        <item>@string/edge_margin_0</item>
-        <item>@string/edge_margin_1</item>
-        <item>@string/edge_margin_2</item>
-        <item>@string/edge_margin_3</item>
-    </string-array>
-
-    <string-array name="edge_margin_values" translatable="false">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-    </string-array>
-
     <string-array name="array_empty" translatable="false"></string-array>
 
 </resources>
