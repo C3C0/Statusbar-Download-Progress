@@ -261,7 +261,7 @@ public class Settings extends Activity {
                 intent.putExtra(EXTRA_CENTERED, prefs.getBoolean(key, false));
             } else if (key.equals(PREF_KEY_THICKNESS)) {
                 intent.setAction(ACTION_SETTINGS_CHANGED);
-                intent.putExtra(EXTRA_THICKNESS, prefs.getInt(key, 2));
+                intent.putExtra(EXTRA_THICKNESS, prefs.getInt(key, 1));
             }
 
             if (ACTION_SETTINGS_CHANGED.equals(intent.getAction())) {

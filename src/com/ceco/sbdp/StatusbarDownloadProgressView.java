@@ -112,7 +112,7 @@ public class StatusbarDownloadProgressView extends View {
                 }
                 if (intent.hasExtra(Settings.EXTRA_THICKNESS)) {
                     mHeightPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                            intent.getIntExtra(Settings.EXTRA_THICKNESS, 2),
+                            intent.getIntExtra(Settings.EXTRA_THICKNESS, 1),
                             getResources().getDisplayMetrics());
                     updatePosition();
                 }
@@ -132,7 +132,7 @@ public class StatusbarDownloadProgressView extends View {
         mAnimated = prefs.getBoolean(Settings.PREF_KEY_ANIMATED, true);
         mCentered = prefs.getBoolean(Settings.PREF_KEY_CENTERED, false);
         mHeightPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                prefs.getInt(Settings.PREF_KEY_THICKNESS, 2),
+                prefs.getInt(Settings.PREF_KEY_THICKNESS, 1),
                 getResources().getDisplayMetrics());
 
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(

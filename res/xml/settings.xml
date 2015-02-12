@@ -44,7 +44,7 @@
             interval="1"
             monitorBoxEnabled="true"
             monitorBoxUnit="px"
-            android:defaultValue="2" />
+            android:defaultValue="1" />
 
        <CheckBoxPreference
             android:key="pref_centered"
