@@ -25,8 +25,10 @@ import com.ceco.sbdp.billing.Inventory;
 import com.ceco.sbdp.billing.Purchase;
 import com.ceco.sbdp.billing.SkuDetails;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
@@ -37,6 +39,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -97,12 +100,16 @@ public class Settings extends Activity {
 
         public PlaceholderFragment() { }
 
+        @SuppressLint("NewApi")
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
 
             mInfoTextView = (TextView) rootView.findViewById(R.id.infoText);
-            sSettingsFragment = (SettingsFragment) getFragmentManager().findFragmentById(R.id.settingsFragment);
+
+            FragmentManager fm = Build.VERSION.SDK_INT > 19 ? 
+                    getChildFragmentManager() : getFragmentManager();
+            sSettingsFragment = (SettingsFragment) fm.findFragmentById(R.id.settingsFragment);
 
             return rootView;
         }
@@ -121,8 +128,8 @@ public class Settings extends Activity {
             sSettingsFragment.setOptionsEnabled(mInfoTextView.getVisibility() == View.GONE);
         }
 
-        private boolean isModuleActive() {
-            return false;
+        private Boolean isModuleActive() {
+            return Boolean.valueOf(false);
         }
     }
 
