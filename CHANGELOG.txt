@@ -1,3 +1,9 @@
+Changelog 1.5 - 14/02/2015
+--------------------------------------
+- Adjusted for Lollipop compatibility
+- Fixed crash on devices that don't use Google Apps
+- Updated Russian translations (thanks to GromozavrStas)
+
 Changelog 1.4 - 12/02/2015
 --------------------------------------
 - Added option for progress bar thickness
