@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-* Copyright (C) 2014 Peter Gregus (C3C076@xda)
-* Liscence Apache, version 2.0 (la "License");
-* Vous ne pouvez pas utiliser ce fichier sauf en conformité avec la Licence.
-* Vous pouvez obtenir une copie de la licence à:
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Sauf si requis par la loi en vigueur ou accord écrit, le logiciel
-* Distribué sous la licence est distribué «TEL QUEL»,
-* SANS GARANTIES OU CONDITIONS DE QUELQUE NATURE QUE CE SOIT, expresse ou implicite.
-* Voir la licence pour les autorisations spécifiques aux différentes langues et
-* Limites prévues par la licence.
+ * Copyright (C) 2014 Peter Gregus (C3C076@xda)
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
 -->
 <resources>
 
     <string name="app_name">Statusbar download progress</string>
-    <string name="app_desc">Affiche une barre de progression de téléchargement dans la barre d\'état pour les téléchargements effectués via le gestionnaire de téléchargement standard Android</string>
+    <string name="app_desc">Affiche une barre de progression dans la barre d\'état pour les téléchargements passant par le gestionnaire de téléchargement Android</string>
     
-    <string name="module_not_active">Module inactif, veuillez utiliser Xposed Installer pour activer le module et ensuite redémarrer votre appareil.</string>
+    <string name="module_not_active">Module inactif, veuillez utiliser Xposed Installer pour activer le module puis redémarrez votre appareil.</string>
 
     <!-- Options -->
     <string name="pref_cat_options_title">Options</string>
@@ -28,7 +28,7 @@
     <string name="sb_download_progress_top">Bord supérieur</string>
     <string name="sb_download_progress_bottom">Bord inférieur</string>
     
-    <string name="pref_edge_margin_title">Taille de la barre</string>
+    <string name="pref_edge_margin_title">Marge du bord</string>
 
     <!-- About -->
     <string name="pref_cat_about_title">À propos</string>
@@ -36,8 +36,8 @@
     <string name="pref_about_donate_title">Don pour le développeur</string>
     <string name="pref_about_donate_waiting">En attente des services de facturation Google&#8230;</string>
     <string name="pref_about_donate_error">Erreur de contact des services de facturation Google</string>
-    <string name="pref_about_donate_no_items">Il n\'y a actuellement aucun élément de don via l\'appli disponible.</string>
-    <string name="pref_about_donate_summary">Appuyez pour lancer le don via l\'appli.</string>
+    <string name="pref_about_donate_no_items">Aucun élément de don via l\'application disponible actuellement.</string>
+    <string name="pref_about_donate_summary">Appuyez pour lancer le don via l\'application.</string>
     <string name="donate_transaction_error">La transaction a échoué.</string>
     <string name="donate_transaction_ok">La transaction s\'est effectuée avec succès. Merci beaucoup pour votre don !</string>
     
@@ -50,4 +50,17 @@
     <string name="press_color_to_apply">Appuyer sur une couleur</string>
     <string name="pref_color_title">Couleur</string>    
 
+    <!-- God mode -->
+    <string name="pref_god_mode_title">Mode \"god\"</string>
+    <string name="pref_god_mode_summary">Tentative d\'affichage d\'une barre de progression pour n\'importe quelle application avec une notification contenant une barre de progression</string>
+
+    <!-- Animated -->
+    <string name="pref_animated_title">Animé</string>
+
+    <!-- Centered -->
+    <string name="pref_centered_title">Centré</string>
+
+    <!-- Thickness -->
+    <string name="pref_thickness_title">Épaisseur</string>
+    
 </resources>
