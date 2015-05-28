@@ -65,4 +65,7 @@
     <!-- Thickness -->
     <string name="pref_thickness_title">Tloušťka</string>
 
+    <!-- Preview -->
+    <string name="preview">Ukázka</string>
+
 </resources>

@@ -65,4 +65,7 @@
     <!-- Thickness -->
     <string name="pref_thickness_title">Thickness</string>
 
+    <!-- Preview -->
+    <string name="preview">Preview</string>
+
 </resources>

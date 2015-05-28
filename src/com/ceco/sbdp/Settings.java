@@ -49,6 +49,7 @@ import android.preference.PreferenceScreen;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -74,6 +75,7 @@ public class Settings extends Activity {
     public static final String EXTRA_ANIMATED = "animated";
     public static final String EXTRA_CENTERED = "centered";
     public static final String EXTRA_THICKNESS = "thickness";
+    public static final String ACTION_RUN_DEMO = "sbdp.intent.action.RUN_DEMO";
 
     private static SettingsFragment sSettingsFragment;
 
@@ -97,6 +99,7 @@ public class Settings extends Activity {
 
     public static class PlaceholderFragment extends Fragment {
         private TextView mInfoTextView;
+        private Button mDemoButton;
 
         public PlaceholderFragment() { }
 
@@ -106,6 +109,14 @@ public class Settings extends Activity {
             View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
 
             mInfoTextView = (TextView) rootView.findViewById(R.id.infoText);
+
+            mDemoButton = (Button) rootView.findViewById(R.id.btnPreview);
+            mDemoButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    v.getContext().sendBroadcast(new Intent(ACTION_RUN_DEMO));
+                }
+            });
 
             FragmentManager fm = Build.VERSION.SDK_INT > 19 ? 
                     getChildFragmentManager() : getFragmentManager();
@@ -121,8 +132,10 @@ public class Settings extends Activity {
             if (!isModuleActive()) {
                 mInfoTextView.setText(R.string.module_not_active);
                 mInfoTextView.setVisibility(View.VISIBLE);
+                mDemoButton.setEnabled(false);
             } else {
                 mInfoTextView.setVisibility(View.GONE);
+                mDemoButton.setEnabled(true);
             }
 
             sSettingsFragment.setOptionsEnabled(mInfoTextView.getVisibility() == View.GONE);

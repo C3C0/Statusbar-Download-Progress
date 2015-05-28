@@ -76,6 +76,7 @@ public class StatusbarDownloadProgressView extends View {
     private ObjectAnimator mAnimator;
     private boolean mCentered;
     private int mHeightPx;
+    private Demo mDemo;
 
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -116,6 +117,8 @@ public class StatusbarDownloadProgressView extends View {
                             getResources().getDisplayMetrics());
                     updatePosition();
                 }
+            } else if (intent.getAction().equals(Settings.ACTION_RUN_DEMO)) {
+                mDemo.start();
             }
         }
     };
@@ -151,7 +154,12 @@ public class StatusbarDownloadProgressView extends View {
         mAnimator.setDuration(ANIM_DURATION);
         mAnimator.setRepeatCount(0);
 
-        context.registerReceiver(mBroadcastReceiver, new IntentFilter(Settings.ACTION_SETTINGS_CHANGED));
+        mDemo = new Demo();
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Settings.ACTION_SETTINGS_CHANGED);
+        intentFilter.addAction(Settings.ACTION_RUN_DEMO);
+        context.registerReceiver(mBroadcastReceiver, intentFilter);
     }
 
     @Override
@@ -263,16 +271,16 @@ public class StatusbarDownloadProgressView extends View {
                 setScaleX(newScaleX);
             }
         } else {
-            if (mAnimator.isStarted()) {
-                mAnimator.end();
-            }
             postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    if (mAnimator.isStarted()) {
+                        mAnimator.end();
+                    }
                     setScaleX(0f);
                     setVisibility(View.GONE);
                 }
-            }, 500);
+            }, ANIM_DURATION + 100);
         }
     }
 
@@ -344,4 +352,42 @@ public class StatusbarDownloadProgressView extends View {
                       0, mMode == Mode.BOTTOM ? mEdgeMarginPx : 0);
         setLayoutParams(lp);
     }
+
+    private class Demo implements Runnable {
+        private boolean mDemoRunning;
+
+        public void start() {
+            if (mId != null || mDemoRunning) {
+                return;
+            }
+            mDemoRunning = true;
+            final View v = StatusbarDownloadProgressView.this;
+            v.setScaleX(0f);
+            v.setVisibility(View.VISIBLE);
+            run();
+        }
+
+        @Override
+        public void run() {
+            if (mId != null) {
+                mDemoRunning = false;
+            }
+            if (!mDemoRunning) {
+                return;
+            }
+            final View v = StatusbarDownloadProgressView.this;
+            float newScale = Math.min(v.getScaleX() + 0.2f, 1f);
+            if (mAnimated) {
+                animateScaleTo(newScale);
+            } else {
+                v.setScaleX(newScale);
+            }
+            if (newScale < 1f) {
+                v.postDelayed(this, ANIM_DURATION + 300);
+            } else {
+                stopTracking();
+                mDemoRunning = false;
+            }
+        }
+    };
 }

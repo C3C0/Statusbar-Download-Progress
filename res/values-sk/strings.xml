@@ -65,4 +65,7 @@
     <!-- Thickness -->
     <string name="pref_thickness_title">Hrúbka</string>
 
+    <!-- Preview -->
+    <string name="preview">Ukážka</string>
+
 </resources>
