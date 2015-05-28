@@ -37,6 +37,7 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
             "android.service.notification.StatusBarNotification" :
                 "com.android.internal.statusbar.StatusBarNotification";
     public static final String CLASS_RANKING_MAP = "android.service.notification.NotificationListenerService.RankingMap";
+    public static final String CLASS_NOTIF_DATA_ENTRY = "com.android.systemui.statusbar.NotificationData$Entry";
     public static final boolean DEBUG = false;
 
     public static void log(String message) {
@@ -126,7 +127,10 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         if (mDownloadProgressView != null) {
                             try {
-                                mDownloadProgressView.onNotificationRemoved(param.getResult());
+                                Object result = param.getResult();
+                                Object statusBarNotif = CLASS_NOTIF_DATA_ENTRY.equals(result.getClass().getName()) ?
+                                                XposedHelpers.getObjectField(result, "notification") : result;
+                                mDownloadProgressView.onNotificationRemoved(statusBarNotif);
                             } catch (Throwable t) {
                                 XposedBridge.log(t);
                             }
