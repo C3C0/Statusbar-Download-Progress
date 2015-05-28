@@ -76,70 +76,69 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     }
                 });
 
+                // new notification
+                XC_MethodHook addNotificationHook = new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        if (mDownloadProgressView != null) {
+                            try {
+                                int index = Build.VERSION.SDK_INT > 19 ? 0 : 1;
+                                mDownloadProgressView.onNotificationAdded(param.args[index]);
+                            } catch (Throwable t) {
+                                XposedBridge.log(t);
+                            }
+                        }
+                    }
+                };
                 if (Build.VERSION.SDK_INT > 19) {
                     XposedHelpers.findAndHookMethod(CLASS_PHONE_STATUSBAR, lpparam.classLoader, "addNotification", 
-                            CLASS_STATUSBAR_NOTIF, CLASS_RANKING_MAP, new XC_MethodHook() {
-                        @Override
-                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            if (mDownloadProgressView != null) {
-                                mDownloadProgressView.onNotificationAdded(param.args[0]);
-                            }
-                        }
-                    });
+                            CLASS_STATUSBAR_NOTIF, CLASS_RANKING_MAP, addNotificationHook);
                 } else {
                     XposedHelpers.findAndHookMethod(CLASS_PHONE_STATUSBAR, lpparam.classLoader, "addNotification", 
-                            IBinder.class, CLASS_STATUSBAR_NOTIF, new XC_MethodHook() {
-                        @Override
-                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            if (mDownloadProgressView != null) {
-                                mDownloadProgressView.onNotificationAdded(param.args[1]);
-                            }
-                        }
-                    });
+                            IBinder.class, CLASS_STATUSBAR_NOTIF, addNotificationHook);
                 }
 
+                // notification update
+                XC_MethodHook updateNotificationHook = new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        if (mDownloadProgressView != null) {
+                            try {
+                                int index = Build.VERSION.SDK_INT > 19 ? 0 : 1;
+                                mDownloadProgressView.onNotificationUpdated(param.args[index]);
+                            } catch (Throwable t) {
+                                XposedBridge.log(t);
+                            }
+                        }
+                    }
+                };
                 if (Build.VERSION.SDK_INT > 19) {
                     XposedHelpers.findAndHookMethod(CLASS_BASE_STATUSBAR, lpparam.classLoader, "updateNotification", 
-                            CLASS_STATUSBAR_NOTIF, CLASS_RANKING_MAP, new XC_MethodHook() {
-                        @Override
-                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            if (mDownloadProgressView != null) {
-                                mDownloadProgressView.onNotificationUpdated(param.args[0]);
-                            }
-                        }
-                    });
+                            CLASS_STATUSBAR_NOTIF, CLASS_RANKING_MAP, updateNotificationHook);
                 } else {
                     XposedHelpers.findAndHookMethod(CLASS_BASE_STATUSBAR, lpparam.classLoader, "updateNotification", 
-                            IBinder.class, CLASS_STATUSBAR_NOTIF, new XC_MethodHook() {
-                        @Override
-                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            if (mDownloadProgressView != null) {
-                                mDownloadProgressView.onNotificationUpdated(param.args[1]);
-                            }
-                        }
-                    });
+                            IBinder.class, CLASS_STATUSBAR_NOTIF, updateNotificationHook);
                 }
 
+                // notification removal
+                XC_MethodHook removeNotificationViewsHook = new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        if (mDownloadProgressView != null) {
+                            try {
+                                mDownloadProgressView.onNotificationRemoved(param.getResult());
+                            } catch (Throwable t) {
+                                XposedBridge.log(t);
+                            }
+                        }
+                    }
+                };
                 if (Build.VERSION.SDK_INT > 19) {
                     XposedHelpers.findAndHookMethod(CLASS_BASE_STATUSBAR, lpparam.classLoader, "removeNotificationViews",
-                            String.class, CLASS_RANKING_MAP, new XC_MethodHook() {
-                        @Override
-                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            if (mDownloadProgressView != null) {
-                                mDownloadProgressView.onNotificationRemoved(param.getResult());
-                            }
-                        }
-                    });
+                            String.class, CLASS_RANKING_MAP, removeNotificationViewsHook);
                 } else {
                     XposedHelpers.findAndHookMethod(CLASS_BASE_STATUSBAR, lpparam.classLoader, "removeNotificationViews",
-                            IBinder.class, new XC_MethodHook() {
-                        @Override
-                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            if (mDownloadProgressView != null) {
-                                mDownloadProgressView.onNotificationRemoved(param.getResult());
-                            }
-                        }
-                    });
+                            IBinder.class, removeNotificationViewsHook);
                 }
             } catch (Throwable t) {
                 XposedBridge.log(t);
