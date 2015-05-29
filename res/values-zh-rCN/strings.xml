@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">状态栏下载进度</string>
+    <string name="app_desc">在状态栏显示 Android 下载管理器的下载任务进度</string>
+    <string name="module_not_active">模块未激活。请使用 Xposed 安装器激活模块然后重启您的设备。 </string>
+    <string name="pref_cat_options_title">选项</string>
+    <string name="pref_mode_title">选择模式</string>
+    <string name="sb_download_progress_off">禁用</string>
+    <string name="sb_download_progress_top">顶部边缘</string>
+    <string name="sb_download_progress_bottom">底部边缘</string>
+    <string name="pref_edge_margin_title">调整边距</string>
+    <string name="pref_cat_about_title">关于</string>
+    <string name="pref_about_summary">开发者：C3C076@XDA（点击访问官方主题）</string>
+    <string name="pref_about_donate_title">支持开发者</string>
+    <string name="pref_about_donate_waiting">正在启动谷歌结算服务…</string>
+    <string name="pref_about_donate_error">启动谷歌结算服务失败</string>
+    <string name="pref_about_donate_no_items">目前无可用的应用程序内捐赠项目。</string>
+    <string name="pref_about_donate_summary">点击启动应用程序内捐赠</string>
+    <string name="donate_transaction_error">捐赠成功</string>
+    <string name="donate_transaction_ok">捐赠成功。感谢您的大力支持！</string>
+    <string name="pref_hide_launcher_icon_title">隐藏启动图标</string>
+    <string name="pref_hide_launcher_icon_summary">可能需要重新启动</string>
+    <string name="dialog_color_picker">取色器</string>
+    <string name="press_color_to_apply">点击颜色应用</string>
+    <string name="pref_color_title">选择颜色</string>
+    <string name="pref_god_mode_title">上帝模式</string>
+    <string name="pref_god_mode_summary">试图显示每个应用正在进行的通知（包含进度条）进度</string>
+    <string name="pref_animated_title">动画效果</string>
+    <string name="pref_centered_title">中心模式</string>
+    <string name="pref_thickness_title">调整厚度</string>
+    <string name="preview">预览</string>
+</resources>
