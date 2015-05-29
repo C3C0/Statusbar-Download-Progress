@@ -28,4 +28,5 @@
     <string name="pref_animated_title">Анимация</string>
     <string name="pref_centered_title">По центру</string>
     <string name="pref_thickness_title">Толщина</string>
+    <string name="preview">Предпросмотр</string>
 </resources>
