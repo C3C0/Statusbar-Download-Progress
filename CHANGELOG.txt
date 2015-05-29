@@ -3,6 +3,8 @@ Changelog 1.6 - 28/05/2015
 - Implemented Preview button
 - Fixed progress bar staying visible after download is finished on HTC Sense devices
 - Updated French translations (thanks to Micks29)
+- Updated Russian translations (thanks to GromozavrStas)
+- Updated Chinese translations (thanks to Hiapk-Angel)
 
 Changelog 1.5 - 14/02/2015
 --------------------------------------
