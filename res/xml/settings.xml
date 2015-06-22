@@ -60,7 +60,8 @@
             android:key="pref_color"
             android:title="@string/pref_color_title" 
             android:defaultValue="@integer/color_default"
-            alphaSlider="false" />
+            alphaSlider="true"
+            hexValue="true" />
 
        <CheckBoxPreference
             android:key="pref_god_mode"
