@@ -1,3 +1,11 @@
+Changelog 1.7 - 25/06/2015
+--------------------------------------
+- Fixed crash on devices that don't use Google Apps
+- Color: allows specifying transparency level
+- Color: allows HEX value input
+- Adjusted for compatibility with MIUI v6 (kitkat)
+- Added Serbian translations (thanks to pejakm)
+
 Changelog 1.6 - 28/05/2015
 --------------------------------------
 - Implemented Preview button
