@@ -36,6 +36,7 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
     public static final String CLASS_STATUSBAR_NOTIF = Build.VERSION.SDK_INT > 17 ?
             "android.service.notification.StatusBarNotification" :
                 "com.android.internal.statusbar.StatusBarNotification";
+    public static final String CLASS_STATUSBAR_NOTIF_MIUI = "com.android.systemui.statusbar.ExpandedNotification";
     public static final String CLASS_RANKING_MAP = "android.service.notification.NotificationListenerService.RankingMap";
     public static final String CLASS_NOTIF_DATA_ENTRY = "com.android.systemui.statusbar.NotificationData$Entry";
     public static final boolean DEBUG = false;
@@ -92,11 +93,21 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     }
                 };
                 if (Build.VERSION.SDK_INT > 19) {
-                    XposedHelpers.findAndHookMethod(CLASS_PHONE_STATUSBAR, lpparam.classLoader, "addNotification", 
-                            CLASS_STATUSBAR_NOTIF, CLASS_RANKING_MAP, addNotificationHook);
+                    try {
+                        XposedHelpers.findAndHookMethod(CLASS_PHONE_STATUSBAR, lpparam.classLoader, "addNotification", 
+                                CLASS_STATUSBAR_NOTIF, CLASS_RANKING_MAP, addNotificationHook);
+                    } catch (NoSuchMethodError nme) {
+                        XposedHelpers.findAndHookMethod(CLASS_PHONE_STATUSBAR, lpparam.classLoader, "addNotification", 
+                                CLASS_STATUSBAR_NOTIF_MIUI, CLASS_RANKING_MAP, addNotificationHook);
+                    }
                 } else {
-                    XposedHelpers.findAndHookMethod(CLASS_PHONE_STATUSBAR, lpparam.classLoader, "addNotification", 
-                            IBinder.class, CLASS_STATUSBAR_NOTIF, addNotificationHook);
+                    try {
+                        XposedHelpers.findAndHookMethod(CLASS_PHONE_STATUSBAR, lpparam.classLoader, "addNotification", 
+                                IBinder.class, CLASS_STATUSBAR_NOTIF, addNotificationHook);
+                    } catch (NoSuchMethodError nme) {
+                        XposedHelpers.findAndHookMethod(CLASS_PHONE_STATUSBAR, lpparam.classLoader, "addNotification", 
+                                IBinder.class, CLASS_STATUSBAR_NOTIF_MIUI, addNotificationHook);
+                    }
                 }
 
                 // notification update
@@ -114,11 +125,21 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     }
                 };
                 if (Build.VERSION.SDK_INT > 19) {
-                    XposedHelpers.findAndHookMethod(CLASS_BASE_STATUSBAR, lpparam.classLoader, "updateNotification", 
-                            CLASS_STATUSBAR_NOTIF, CLASS_RANKING_MAP, updateNotificationHook);
+                    try {
+                        XposedHelpers.findAndHookMethod(CLASS_BASE_STATUSBAR, lpparam.classLoader, "updateNotification", 
+                                CLASS_STATUSBAR_NOTIF, CLASS_RANKING_MAP, updateNotificationHook);
+                    } catch (NoSuchMethodError nme) {
+                        XposedHelpers.findAndHookMethod(CLASS_BASE_STATUSBAR, lpparam.classLoader, "updateNotification", 
+                                CLASS_STATUSBAR_NOTIF_MIUI, CLASS_RANKING_MAP, updateNotificationHook);
+                    }
                 } else {
-                    XposedHelpers.findAndHookMethod(CLASS_BASE_STATUSBAR, lpparam.classLoader, "updateNotification", 
-                            IBinder.class, CLASS_STATUSBAR_NOTIF, updateNotificationHook);
+                    try {
+                        XposedHelpers.findAndHookMethod(CLASS_BASE_STATUSBAR, lpparam.classLoader, "updateNotification", 
+                                IBinder.class, CLASS_STATUSBAR_NOTIF, updateNotificationHook);
+                    } catch (NoSuchMethodError nme) {
+                        XposedHelpers.findAndHookMethod(CLASS_BASE_STATUSBAR, lpparam.classLoader, "updateNotification", 
+                                IBinder.class, CLASS_STATUSBAR_NOTIF_MIUI, updateNotificationHook);
+                    }
                 }
 
                 // notification removal
