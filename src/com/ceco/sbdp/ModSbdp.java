@@ -149,9 +149,11 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                         if (mDownloadProgressView != null) {
                             try {
                                 Object result = param.getResult();
-                                Object statusBarNotif = CLASS_NOTIF_DATA_ENTRY.equals(result.getClass().getName()) ?
+                                if (result != null) {
+                                    Object statusBarNotif = CLASS_NOTIF_DATA_ENTRY.equals(result.getClass().getName()) ?
                                                 XposedHelpers.getObjectField(result, "notification") : result;
-                                mDownloadProgressView.onNotificationRemoved(statusBarNotif);
+                                    mDownloadProgressView.onNotificationRemoved(statusBarNotif);
+                                }
                             } catch (Throwable t) {
                                 XposedBridge.log(t);
                             }
