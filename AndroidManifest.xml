@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ceco.sbdp"
-    android:versionCode="11"
-    android:versionName="1.7" >
+    android:versionCode="12"
+    android:versionName="1.8" >
 
     <uses-sdk
         android:minSdkVersion="16"

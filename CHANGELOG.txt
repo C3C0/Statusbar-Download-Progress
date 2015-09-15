@@ -1,3 +1,8 @@
+Changelog 1.8 - 15/09/2015
+--------------------------------------
+- Improved compatibility with some Motorola Lollipop devices
+- Fixed null pointer exceptions appearing in xposed error log
+
 Changelog 1.7 - 25/06/2015
 --------------------------------------
 - Fixed crash on devices that don't use Google Apps
