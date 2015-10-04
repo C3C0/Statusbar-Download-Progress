@@ -46,7 +46,10 @@ public class StatusbarDownloadProgressView extends View {
             "com.android.bluetooth",
             "com.mediatek.bluetooth",
             "com.android.chrome",
-            "org.mozilla.firefox"
+            "org.mozilla.firefox",
+            "org.mozilla.firefox_beta",
+            "org.mozilla.fennec_aurora",
+            "org.mozilla.fennec"
     ));
 
     private static final int ANIM_DURATION = 400;
