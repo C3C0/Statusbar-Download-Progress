@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Peter Gregus (C3C076@xda)
+ * Copyright (C) 2015 Peter Gregus (C3C076@xda)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,6 +82,7 @@ public class StatusbarDownloadProgressView extends View {
     private Demo mDemo;
 
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @SuppressWarnings("deprecation")
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Settings.ACTION_SETTINGS_CHANGED)) {
@@ -126,6 +127,7 @@ public class StatusbarDownloadProgressView extends View {
         }
     };
 
+    @SuppressWarnings("deprecation")
     public StatusbarDownloadProgressView(Context context) {
         super(context);
 

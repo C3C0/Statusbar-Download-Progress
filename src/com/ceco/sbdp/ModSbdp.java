@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Peter Gregus (C3C076@xda)
+ * Copyright (C) 2015 Peter Gregus (C3C076@xda)
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -92,7 +92,15 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                         }
                     }
                 };
-                if (Build.VERSION.SDK_INT > 19) {
+                if (Build.VERSION.SDK_INT > 22) {
+                    try {
+                        XposedHelpers.findAndHookMethod(CLASS_PHONE_STATUSBAR, lpparam.classLoader, "addNotification", 
+                                CLASS_STATUSBAR_NOTIF, CLASS_RANKING_MAP, CLASS_NOTIF_DATA_ENTRY, addNotificationHook);
+                    } catch (NoSuchMethodError nme) {
+                        XposedHelpers.findAndHookMethod(CLASS_PHONE_STATUSBAR, lpparam.classLoader, "addNotification", 
+                                CLASS_STATUSBAR_NOTIF_MIUI, CLASS_RANKING_MAP, CLASS_NOTIF_DATA_ENTRY, addNotificationHook);
+                    }
+                } else if (Build.VERSION.SDK_INT > 19) {
                     try {
                         XposedHelpers.findAndHookMethod(CLASS_PHONE_STATUSBAR, lpparam.classLoader, "addNotification", 
                                 CLASS_STATUSBAR_NOTIF, CLASS_RANKING_MAP, addNotificationHook);
