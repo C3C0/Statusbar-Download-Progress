@@ -1,3 +1,8 @@
+Changelog 1.9 - 15/11/2015
+--------------------------------------
+- Adjusted for Marshmallow compatibility
+- Added implicit support for various Firefox pre-releases (thanks to buttercookie42)
+
 Changelog 1.8 - 15/09/2015
 --------------------------------------
 - Improved compatibility with some Motorola Lollipop devices
