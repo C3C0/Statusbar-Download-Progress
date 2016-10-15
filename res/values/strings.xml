@@ -48,9 +48,11 @@
     <string name="pref_hide_launcher_icon_summary">May require launcher restart</string>
 
     <!-- Progress bar color -->
+    <string name="pref_cat_colors_title">Colors</string>
     <string name="dialog_color_picker">Color picker</string>
     <string name="press_color_to_apply">Press on color to apply</string>
     <string name="pref_color_title">Color</string>
+    <string name="pref_color_follow_clock_title">Follow clock color</string>
 
     <!-- God mode -->
     <string name="pref_god_mode_title">God mode</string>

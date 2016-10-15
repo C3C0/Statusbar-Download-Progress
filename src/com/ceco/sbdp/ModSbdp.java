@@ -17,6 +17,7 @@ package com.ceco.sbdp;
 import android.os.Build;
 import android.os.IBinder;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
@@ -39,6 +40,7 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
     public static final String CLASS_STATUSBAR_NOTIF_MIUI = "com.android.systemui.statusbar.ExpandedNotification";
     public static final String CLASS_RANKING_MAP = "android.service.notification.NotificationListenerService.RankingMap";
     public static final String CLASS_NOTIF_DATA_ENTRY = "com.android.systemui.statusbar.NotificationData$Entry";
+    public static final String CLASS_CLOCK = "com.android.systemui.statusbar.policy.Clock";
     public static final boolean DEBUG = false;
 
     public static void log(String message) {
@@ -77,6 +79,22 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                         if (DEBUG) log("Download progress view injected");
                     }
                 });
+
+                try {
+                    XposedBridge.hookAllConstructors(
+                            XposedHelpers.findClass(CLASS_CLOCK, lpparam.classLoader),
+                            new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            if (DEBUG) log("Clock constructed: " + param.thisObject);
+                            if (mDownloadProgressView != null) {
+                                mDownloadProgressView.setClock((TextView)param.thisObject);
+                            }
+                        }
+                    });
+                } catch (Throwable t) {
+                    log("Error hooking clock: clock based coloring won't work");
+                }
 
                 // new notification
                 XC_MethodHook addNotificationHook = new XC_MethodHook() {

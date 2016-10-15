@@ -56,18 +56,31 @@
             android:title="@string/pref_animated_title"
             android:defaultValue="true" />
 
-       <net.margaritov.preference.colorpicker.ColorPickerPreference
-            android:key="pref_color"
-            android:title="@string/pref_color_title" 
-            android:defaultValue="@integer/color_default"
-            alphaSlider="true"
-            hexValue="true" />
-
        <CheckBoxPreference
             android:key="pref_god_mode"
             android:title="@string/pref_god_mode_title"
             android:summary="@string/pref_god_mode_summary"
             android:defaultValue="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="pref_cat_colors"
+        android:title="@string/pref_cat_colors_title">>
+
+        <CheckBoxPreference
+            android:key="pref_color_follow_clock"
+            android:title="@string/pref_color_follow_clock_title"
+            android:defaultValue="false"
+            android:disableDependentsState="true" />
+
+        <net.margaritov.preference.colorpicker.ColorPickerPreference
+            android:key="pref_color"
+            android:title="@string/pref_color_title" 
+            android:defaultValue="@integer/color_default"
+            alphaSlider="true"
+            hexValue="true"
+            android:dependency="pref_color_follow_clock" />
 
     </PreferenceCategory>
 

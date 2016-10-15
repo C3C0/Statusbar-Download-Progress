@@ -39,6 +39,7 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.RemoteViews;
+import android.widget.TextView;
 
 public class StatusbarDownloadProgressView extends View {
     public static final List<String> SUPPORTED_PACKAGES = new ArrayList<String>(Arrays.asList(
@@ -80,6 +81,9 @@ public class StatusbarDownloadProgressView extends View {
     private boolean mCentered;
     private int mHeightPx;
     private Demo mDemo;
+    private TextView mClock;
+    private int mColor;
+    private boolean mFollowClockColor;
 
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @SuppressWarnings("deprecation")
@@ -101,9 +105,15 @@ public class StatusbarDownloadProgressView extends View {
                     updatePosition();
                 }
                 if (intent.hasExtra(Settings.EXTRA_COLOR)) {
-                    setBackgroundColor(intent.getIntExtra(Settings.EXTRA_COLOR, 
+                    mColor = intent.getIntExtra(Settings.EXTRA_COLOR, 
                             Build.VERSION.SDK_INT >= 19 ? Color.WHITE : 
-                                getResources().getColor(android.R.color.holo_blue_dark)));
+                                getResources().getColor(android.R.color.holo_blue_dark));
+                    updateColor();
+                }
+                if (intent.hasExtra(Settings.EXTRA_COLOR_FOLLOW_CLOCK)) {
+                    mFollowClockColor = intent.getBooleanExtra(
+                            Settings.EXTRA_COLOR_FOLLOW_CLOCK, false);
+                    updateColor();
                 }
                 if (intent.hasExtra(Settings.EXTRA_GOD_MODE)) {
                     mGodMode = intent.getBooleanExtra(Settings.EXTRA_GOD_MODE, false);
@@ -142,13 +152,15 @@ public class StatusbarDownloadProgressView extends View {
         mHeightPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 prefs.getInt(Settings.PREF_KEY_THICKNESS, 1),
                 getResources().getDisplayMetrics());
+        mColor = prefs.getInt(Settings.PREF_KEY_COLOR, 
+                Build.VERSION.SDK_INT >= 19 ? Color.WHITE : 
+                    getResources().getColor(android.R.color.holo_blue_dark));
+        mFollowClockColor = prefs.getBoolean(Settings.PREF_KEY_COLOR_FOLLOW_CLOCK, false);
 
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, mHeightPx);
         setLayoutParams(lp);
-        setBackgroundColor(prefs.getInt(Settings.PREF_KEY_COLOR, 
-                Build.VERSION.SDK_INT >= 19 ? Color.WHITE : 
-                    getResources().getColor(android.R.color.holo_blue_dark)));
+        updateColor();
         setScaleX(0f);
         setVisibility(View.GONE);
         updatePosition();
@@ -165,6 +177,21 @@ public class StatusbarDownloadProgressView extends View {
         intentFilter.addAction(Settings.ACTION_SETTINGS_CHANGED);
         intentFilter.addAction(Settings.ACTION_RUN_DEMO);
         context.registerReceiver(mBroadcastReceiver, intentFilter);
+    }
+
+    public void setClock(TextView clock) {
+        if (mClock == null) {
+            mClock = clock;
+            updateColor();
+        }
+    }
+
+    private void updateColor() {
+        if (mFollowClockColor && mClock != null) {
+            setBackgroundColor(mClock.getCurrentTextColor());
+        } else {
+            setBackgroundColor(mColor);
+        }
     }
 
     @Override
@@ -270,6 +297,7 @@ public class StatusbarDownloadProgressView extends View {
             float newScaleX = getProgressInfo(n).getFraction();
             if (ModSbdp.DEBUG) ModSbdp.log("updateProgress: newScaleX=" + newScaleX);
             setVisibility(View.VISIBLE);
+            updateColor();
             if (mAnimated) {
                 animateScaleTo(newScaleX);
             } else {
@@ -380,6 +408,7 @@ public class StatusbarDownloadProgressView extends View {
             if (!mDemoRunning) {
                 return;
             }
+            updateColor();
             final View v = StatusbarDownloadProgressView.this;
             float newScale = Math.min(v.getScaleX() + 0.2f, 1f);
             if (mAnimated) {

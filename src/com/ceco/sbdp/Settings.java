@@ -58,6 +58,7 @@ public class Settings extends Activity {
     public static final String PREF_KEY_MODE = "pref_mode";
     public static final String PREF_KEY_EDGE_MARGIN = "pref_edge_margin2";
     public static final String PREF_KEY_COLOR = "pref_color";
+    public static final String PREF_KEY_COLOR_FOLLOW_CLOCK = "pref_color_follow_clock";
     public static final String PREF_KEY_GOD_MODE = "pref_god_mode";
     public static final String PREF_KEY_ANIMATED = "pref_animated";
     public static final String PREF_KEY_CENTERED = "pref_centered";
@@ -71,6 +72,7 @@ public class Settings extends Activity {
     public static final String EXTRA_MODE = "mode";
     public static final String EXTRA_EDGE_MARGIN = "edgeMargin";
     public static final String EXTRA_COLOR = "color";
+    public static final String EXTRA_COLOR_FOLLOW_CLOCK = "colorFollowClock";
     public static final String EXTRA_GOD_MODE = "godMode";
     public static final String EXTRA_ANIMATED = "animated";
     public static final String EXTRA_CENTERED = "centered";
@@ -263,6 +265,9 @@ public class Settings extends Activity {
                 intent.setAction(ACTION_SETTINGS_CHANGED);
                 intent.putExtra(EXTRA_COLOR, prefs.getInt(key,
                         getResources().getInteger(R.integer.color_default)));
+            } else if (key.equals(PREF_KEY_COLOR_FOLLOW_CLOCK)) {
+                intent.setAction(ACTION_SETTINGS_CHANGED);
+                intent.putExtra(EXTRA_COLOR_FOLLOW_CLOCK, prefs.getBoolean(key, false));
             } else if (key.equals(PREF_KEY_GOD_MODE)) {
                 intent.setAction(ACTION_SETTINGS_CHANGED);
                 intent.putExtra(EXTRA_GOD_MODE, prefs.getBoolean(key, false));

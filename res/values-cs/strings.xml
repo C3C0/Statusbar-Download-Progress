@@ -48,9 +48,11 @@
     <string name="pref_hide_launcher_icon_summary">Může vyžadovat restart spouštěče aplikací</string>
 
     <!-- Progress bar color -->
+    <string name="pref_cat_colors_title">Barvy</string>
     <string name="dialog_color_picker">Výběr barvy</string>
     <string name="press_color_to_apply">Dotykem potvrdíte barvu</string>
     <string name="pref_color_title">Barva indikátoru</string>
+    <string name="pref_color_follow_clock_title">Použít barvu hodin</string>
 
     <!-- God mode -->
     <string name="pref_god_mode_title">Super režim</string>
