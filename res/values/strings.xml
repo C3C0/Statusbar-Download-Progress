@@ -70,4 +70,10 @@
     <!-- Preview -->
     <string name="preview">Preview</string>
 
+    <!-- Sounds -->
+    <string name="pref_cat_sounds_title">Sounds</string>
+    <string name="pref_sound_enable_title">Enable sound</string>
+    <string name="pref_sound_enable_summary">Plays notification sound when transfer is finished or interrupted</string>
+    <string name="pref_sound_title">Choose sound</string>
+
 </resources>

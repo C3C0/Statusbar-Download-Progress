@@ -38,6 +38,8 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -46,6 +48,7 @@ import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
+import android.preference.RingtonePreference;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,6 +66,8 @@ public class Settings extends Activity {
     public static final String PREF_KEY_ANIMATED = "pref_animated";
     public static final String PREF_KEY_CENTERED = "pref_centered";
     public static final String PREF_KEY_THICKNESS = "pref_thickness";
+    public static final String PREF_KEY_SOUND_ENABLE = "pref_sound_enable";
+    public static final String PREF_KEY_SOUND = "pref_sound";
 
     public static final String PREF_KEY_ABOUT = "pref_about";
     public static final String PREF_KEY_ABOUT_DONATE = "pref_about_donate";
@@ -77,6 +82,8 @@ public class Settings extends Activity {
     public static final String EXTRA_ANIMATED = "animated";
     public static final String EXTRA_CENTERED = "centered";
     public static final String EXTRA_THICKNESS = "thickness";
+    public static final String EXTRA_SOUND_ENABLE = "soundEnable";
+    public static final String EXTRA_SOUND_URI = "soundUri";
     public static final String ACTION_RUN_DEMO = "sbdp.intent.action.RUN_DEMO";
 
     private static SettingsFragment sSettingsFragment;
@@ -161,6 +168,7 @@ public class Settings extends Activity {
         private ListPreference mPrefMode;
         private Preference mPrefAbout;
         private ListPreference mPrefAboutDonate;
+        private RingtonePreference mPrefSound;
         private IabHelper mIabHelper; 
 
         private static List<String> sSkuList = new ArrayList<String>(Arrays.asList(
@@ -192,6 +200,8 @@ public class Settings extends Activity {
 
             mPrefAboutDonate = (ListPreference) findPreference(PREF_KEY_ABOUT_DONATE);
             mPrefAboutDonate.setOnPreferenceChangeListener(this);
+
+            mPrefSound = (RingtonePreference) findPreference(PREF_KEY_SOUND);
         }
 
         protected void setOptionsEnabled(boolean enabled) {
@@ -200,6 +210,17 @@ public class Settings extends Activity {
 
         protected void updateSummaries() {
             mPrefMode.setSummary(mPrefMode.getEntry());
+
+            mPrefSound.setSummary("");
+            String val = mPrefs.getString(PREF_KEY_SOUND,
+                    "content://settings/system/notification_sound");
+            if (val != null && !val.isEmpty()) {
+                Uri uri = Uri.parse(val);
+                Ringtone r = RingtoneManager.getRingtone(getActivity(), uri);
+                if (r != null) {
+                    mPrefSound.setSummary(r.getTitle(getActivity()));
+                }
+            }
         }
 
         @Override
@@ -287,6 +308,13 @@ public class Settings extends Activity {
             } else if (key.equals(PREF_KEY_THICKNESS)) {
                 intent.setAction(ACTION_SETTINGS_CHANGED);
                 intent.putExtra(EXTRA_THICKNESS, prefs.getInt(key, 1));
+            } else if (key.equals(PREF_KEY_SOUND_ENABLE)) {
+                intent.setAction(ACTION_SETTINGS_CHANGED);
+                intent.putExtra(EXTRA_SOUND_ENABLE, prefs.getBoolean(key, false));
+            } else if (key.equals(PREF_KEY_SOUND)) {
+                intent.setAction(ACTION_SETTINGS_CHANGED);
+                intent.putExtra(EXTRA_SOUND_URI, prefs.getString(key,
+                        "content://settings/system/notification_sound"));
             }
 
             if (ACTION_SETTINGS_CHANGED.equals(intent.getAction())) {

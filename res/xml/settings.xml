@@ -85,6 +85,27 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:key="pref_cat_sounds"
+        android:title="@string/pref_cat_sounds_title">>
+
+        <CheckBoxPreference
+            android:key="pref_sound_enable"
+            android:title="@string/pref_sound_enable_title"
+            android:summary="@string/pref_sound_enable_summary"
+            android:defaultValue="false" />
+
+        <RingtonePreference 
+            android:key="pref_sound"
+            android:title="@string/pref_sound_title"
+            android:ringtoneType="notification"
+            android:showDefault="true"
+            android:showSilent="false"
+            android:defaultValue="content://settings/system/notification_sound"
+            android:dependency="pref_sound_enable" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:key="pref_cat_about"
         android:title="@string/pref_cat_about_title">
 

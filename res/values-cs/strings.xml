@@ -70,4 +70,10 @@
     <!-- Preview -->
     <string name="preview">Ukázka</string>
 
+    <!-- Sounds -->
+    <string name="pref_cat_sounds_title">Zvuk</string>
+    <string name="pref_sound_enable_title">Povolit zvuk</string>
+    <string name="pref_sound_enable_summary">Přehraje upozornění v případě ukončení nebo přerušení přenosu</string>
+    <string name="pref_sound_title">Vybrat zvuk</string>
+
 </resources>

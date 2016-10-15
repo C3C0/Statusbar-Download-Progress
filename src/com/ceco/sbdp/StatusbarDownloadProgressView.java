@@ -30,6 +30,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.media.AudioManager;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -84,6 +88,8 @@ public class StatusbarDownloadProgressView extends View {
     private TextView mClock;
     private int mColor;
     private boolean mFollowClockColor;
+    private boolean mSoundEnabled;
+    private String mSoundUri;
 
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @SuppressWarnings("deprecation")
@@ -131,6 +137,12 @@ public class StatusbarDownloadProgressView extends View {
                             getResources().getDisplayMetrics());
                     updatePosition();
                 }
+                if (intent.hasExtra(Settings.EXTRA_SOUND_ENABLE)) {
+                    mSoundEnabled = intent.getBooleanExtra(Settings.EXTRA_SOUND_ENABLE, false);
+                }
+                if (intent.hasExtra(Settings.EXTRA_SOUND_URI)) {
+                    mSoundUri = intent.getStringExtra(Settings.EXTRA_SOUND_URI);
+                }
             } else if (intent.getAction().equals(Settings.ACTION_RUN_DEMO)) {
                 mDemo.start();
             }
@@ -156,6 +168,9 @@ public class StatusbarDownloadProgressView extends View {
                 Build.VERSION.SDK_INT >= 19 ? Color.WHITE : 
                     getResources().getColor(android.R.color.holo_blue_dark));
         mFollowClockColor = prefs.getBoolean(Settings.PREF_KEY_COLOR_FOLLOW_CLOCK, false);
+        mSoundEnabled = prefs.getBoolean(Settings.PREF_KEY_SOUND_ENABLE, false);
+        mSoundUri = prefs.getString(Settings.PREF_KEY_SOUND,
+                "content://settings/system/notification_sound");
 
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, mHeightPx);
@@ -194,6 +209,20 @@ public class StatusbarDownloadProgressView extends View {
         }
     }
 
+    @SuppressWarnings("deprecation")
+    private void playSound() {
+        try {
+            final Ringtone sfx = RingtoneManager.getRingtone(getContext(),
+                    Uri.parse(mSoundUri));
+            if (sfx != null) {
+                sfx.setStreamType(AudioManager.STREAM_NOTIFICATION);
+                sfx.play();
+            }
+        } catch (Throwable t) {
+            XposedBridge.log(t);
+        }
+    }
+
     @Override
     public void onSizeChanged(int w, int h, int oldw, int oldh) {
         if (ModSbdp.DEBUG) ModSbdp.log("w=" + w + "; h=" + h);
@@ -201,6 +230,9 @@ public class StatusbarDownloadProgressView extends View {
     }
 
     private void stopTracking() {
+        if (mSoundEnabled && mId != null) {
+            playSound();
+        }
         mId = null;
         updateProgress(null);
     }
@@ -419,6 +451,9 @@ public class StatusbarDownloadProgressView extends View {
             if (newScale < 1f) {
                 v.postDelayed(this, ANIM_DURATION + 300);
             } else {
+                if (mSoundEnabled) {
+                    playSound();
+                }
                 stopTracking();
                 mDemoRunning = false;
             }
