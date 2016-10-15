@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="url_xda">http://forum.xda-developers.com/xposed/modules/app-statusbar-download-progress-v1-0-t2933867</string>
+    <string name="app_name">Statusbar download progress</string>
+    <string name="app_desc">Pokazuje pasek postępu pobierania w pasku statusu dla pobrań przeprowadzonych przez standardowy menedżer pobierania Android</string>
+    <string name="module_not_active">Moduł jest nieaktywny. Użyj Xposed Installer, aby aktywować moduł, następnie uruchom ponownie urządzenie.</string>
+    <string name="pref_cat_options_title">Opcje</string>
+    <string name="pref_mode_title">Tryb</string>
+    <string name="sb_download_progress_off">Wyłączony</string>
+    <string name="sb_download_progress_top">Górna krawędź</string>
+    <string name="sb_download_progress_bottom">Dolna krawędź</string>
+    <string name="pref_edge_margin_title">Margines krawędzi</string>
+    <string name="pref_cat_about_title">O aplikacji</string>
+    <string name="pref_about_summary">Opracowany przez C3C076@XDA. Dotknij, aby odwiedzić oficjalny temat.</string>
+    <string name="pref_about_donate_title">Wesprzyj dewelopera</string>
+    <string name="pref_about_donate_waiting">Oczekiwanie na usługi rozliczeniowe Google…</string>
+    <string name="pref_about_donate_error">Błąd usług rozliczeniowych Google</string>
+    <string name="pref_about_donate_no_items">Obecnie nie ma żadnych dostępnych pozycji dotacji w aplikacji</string>
+    <string name="pref_about_donate_summary">Dotknij, aby zainicjować dotację w aplikacji</string>
+    <string name="donate_transaction_error">Dotacja zakończona niepowodzeniem</string>
+    <string name="donate_transaction_ok">Dotacja zakończona powodzeniem. Bardzo dziękuję za wsparcie!</string>
+    <string name="pref_hide_launcher_icon_title">Ukryj ikonę na ekranie aplikacji</string>
+    <string name="pref_hide_launcher_icon_summary">Może wymagać ponownego uruchomienia launchera</string>
+    <string name="dialog_color_picker">Wybierz kolor</string>
+    <string name="press_color_to_apply">Naciśnij kolor, aby zastosować</string>
+    <string name="pref_color_title">Kolor</string>
+    <string name="pref_god_mode_title">Tryb Boga</string>
+    <string name="pref_god_mode_summary">Próbuje pokazać pasek postępu dla każdej aplikacji mającej bieżące powiadomienie, które zawiera pasek postępu</string>
+    <string name="pref_animated_title">Animowany</string>
+    <string name="pref_centered_title">Wyśrodkowany</string>
+    <string name="pref_thickness_title">Grubość</string>
+    <string name="preview">Podgląd</string>
+</resources>
