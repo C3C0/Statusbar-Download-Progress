@@ -1,3 +1,9 @@
+Changelog 2.0 - 16/10/2016
+--------------------------------------
+- Added option for sound notification
+- Added option for using current status bar's clock color as progress bar color
+- Added Polish translations (thanks to Marcin Glowacki)
+
 Changelog 1.9 - 15/11/2015
 --------------------------------------
 - Adjusted for Marshmallow compatibility
