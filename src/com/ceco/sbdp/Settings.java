@@ -68,6 +68,7 @@ public class Settings extends Activity {
     public static final String PREF_KEY_THICKNESS = "pref_thickness";
     public static final String PREF_KEY_SOUND_ENABLE = "pref_sound_enable";
     public static final String PREF_KEY_SOUND = "pref_sound";
+    public static final String PREF_KEY_SOUND_SCREEN_OFF = "pref_sound_screen_off";
 
     public static final String PREF_KEY_ABOUT = "pref_about";
     public static final String PREF_KEY_ABOUT_DONATE = "pref_about_donate";
@@ -84,6 +85,7 @@ public class Settings extends Activity {
     public static final String EXTRA_THICKNESS = "thickness";
     public static final String EXTRA_SOUND_ENABLE = "soundEnable";
     public static final String EXTRA_SOUND_URI = "soundUri";
+    public static final String EXTRA_SOUND_SCREEN_OFF = "soundScreenOff";
     public static final String ACTION_RUN_DEMO = "sbdp.intent.action.RUN_DEMO";
 
     private static SettingsFragment sSettingsFragment;
@@ -315,6 +317,9 @@ public class Settings extends Activity {
                 intent.setAction(ACTION_SETTINGS_CHANGED);
                 intent.putExtra(EXTRA_SOUND_URI, prefs.getString(key,
                         "content://settings/system/notification_sound"));
+            } else if (key.equals(PREF_KEY_SOUND_SCREEN_OFF)) {
+                intent.setAction(ACTION_SETTINGS_CHANGED);
+                intent.putExtra(EXTRA_SOUND_SCREEN_OFF, prefs.getBoolean(key, false));
             }
 
             if (ACTION_SETTINGS_CHANGED.equals(intent.getAction())) {

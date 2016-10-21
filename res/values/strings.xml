@@ -75,5 +75,7 @@
     <string name="pref_sound_enable_title">Enable sound</string>
     <string name="pref_sound_enable_summary">Plays notification sound when transfer is finished or interrupted</string>
     <string name="pref_sound_title">Choose sound</string>
+    <string name="pref_sound_screen_off_title">Only when screen is off</string>
+    <string name="pref_sound_screen_off_summary">Plays notification sound only when screen is off</string>
 
 </resources>

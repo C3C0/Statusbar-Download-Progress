@@ -75,5 +75,7 @@
     <string name="pref_sound_enable_title">Povolit zvuk</string>
     <string name="pref_sound_enable_summary">Přehraje upozornění v případě ukončení nebo přerušení přenosu</string>
     <string name="pref_sound_title">Vybrat zvuk</string>
+    <string name="pref_sound_screen_off_title">Jen při vypnuté obrazovce</string>
+    <string name="pref_sound_screen_off_summary">Přehraje upozornění pouze v případě vypnuté obrazovky</string>
 
 </resources>

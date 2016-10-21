@@ -103,6 +103,13 @@
             android:defaultValue="content://settings/system/notification_sound"
             android:dependency="pref_sound_enable" />
 
+        <CheckBoxPreference
+            android:key="pref_sound_screen_off"
+            android:title="@string/pref_sound_screen_off_title"
+            android:summary="@string/pref_sound_screen_off_summary"
+            android:defaultValue="false"
+            android:dependency="pref_sound_enable" />
+
     </PreferenceCategory>
 
     <PreferenceCategory
