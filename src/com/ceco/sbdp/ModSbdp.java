@@ -87,8 +87,9 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                             if (DEBUG) log("Clock constructed: " + param.thisObject);
-                            if (mDownloadProgressView != null) {
-                                mDownloadProgressView.setClock((TextView)param.thisObject);
+                            if (mDownloadProgressView != null &&
+                                    (param.thisObject instanceof TextView)) {
+                                mDownloadProgressView.addClock((TextView)param.thisObject);
                             }
                         }
                     });
