@@ -74,5 +74,7 @@
     <string name="pref_sound_enable_title">Włącz dźwięk</string>
     <string name="pref_sound_enable_summary">Odtwarza dźwięk powiadomienia, gdy pobieranie zostanie zakończone lub przerwane</string>
     <string name="pref_sound_title">Wybierz dźwięk</string>
+	<string name="pref_sound_screen_off_title">Tylko, gdy ekran jest wyłączony</string>
+    <string name="pref_sound_screen_off_summary">Odtwarza dźwięk powiadomienia tylko wtedy, gdy ekran jest wyłączony</string>
 
 </resources>
