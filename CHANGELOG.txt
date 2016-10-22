@@ -1,3 +1,9 @@
+Changelog 2.1 - 22/10/2016
+--------------------------------------
+- Improved compatibility of clock-based coloring
+- Added option for playing sound only when screen is off
+- Updated Polish translations (thanks to pantinPL)
+
 Changelog 2.0 - 16/10/2016
 --------------------------------------
 - Added option for sound notification
