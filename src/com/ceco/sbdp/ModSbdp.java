@@ -15,7 +15,6 @@
 package com.ceco.sbdp;
 
 import android.os.Build;
-import android.os.IBinder;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -34,11 +33,6 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
     public static final String CLASS_PHONE_STATUSBAR_VIEW = "com.android.systemui.statusbar.phone.PhoneStatusBarView";
     public static final String CLASS_PHONE_STATUSBAR = "com.android.systemui.statusbar.phone.PhoneStatusBar";
     public static final String CLASS_BASE_STATUSBAR = "com.android.systemui.statusbar.BaseStatusBar";
-    public static final String CLASS_STATUSBAR_NOTIF = Build.VERSION.SDK_INT > 17 ?
-            "android.service.notification.StatusBarNotification" :
-                "com.android.internal.statusbar.StatusBarNotification";
-    public static final String CLASS_STATUSBAR_NOTIF_MIUI = "com.android.systemui.statusbar.ExpandedNotification";
-    public static final String CLASS_RANKING_MAP = "android.service.notification.NotificationListenerService.RankingMap";
     public static final String CLASS_NOTIF_DATA_ENTRY = "com.android.systemui.statusbar.NotificationData$Entry";
     public static final String CLASS_CLOCK = "com.android.systemui.statusbar.policy.Clock";
     public static final boolean DEBUG = false;
@@ -69,6 +63,10 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                 if (DEBUG) log("Creating status bar hooks");
                 Class<?> classPhoneStatusbarView = XposedHelpers.findClass(CLASS_PHONE_STATUSBAR_VIEW,
                         lpparam.classLoader);
+                Class<?> classPhoneStatusbar = XposedHelpers.findClass(CLASS_PHONE_STATUSBAR,
+                        lpparam.classLoader);
+                Class<?> classBaseStatusbar = XposedHelpers.findClass(CLASS_BASE_STATUSBAR,
+                        lpparam.classLoader);
 
                 XposedBridge.hookAllConstructors(classPhoneStatusbarView, new XC_MethodHook() {
                     @Override
@@ -98,79 +96,37 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                 }
 
                 // new notification
-                XC_MethodHook addNotificationHook = new XC_MethodHook() {
+                XposedBridge.hookAllMethods(classPhoneStatusbar, "addNotification", new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         if (mDownloadProgressView != null) {
-                            try {
-                                int index = Build.VERSION.SDK_INT > 19 ? 0 : 1;
-                                mDownloadProgressView.onNotificationAdded(param.args[index]);
-                            } catch (Throwable t) {
-                                XposedBridge.log(t);
+                            Object sbNotif = getSbNotificationFromArgs(param.args);
+                            if (sbNotif != null) {
+                                mDownloadProgressView.onNotificationAdded(sbNotif);
+                            } else {
+                                log("addNotification: Couldn't find StatusbarNotification in params");
                             }
                         }
                     }
-                };
-                if (Build.VERSION.SDK_INT > 22) {
-                    try {
-                        XposedHelpers.findAndHookMethod(CLASS_PHONE_STATUSBAR, lpparam.classLoader, "addNotification", 
-                                CLASS_STATUSBAR_NOTIF, CLASS_RANKING_MAP, CLASS_NOTIF_DATA_ENTRY, addNotificationHook);
-                    } catch (NoSuchMethodError nme) {
-                        XposedHelpers.findAndHookMethod(CLASS_PHONE_STATUSBAR, lpparam.classLoader, "addNotification", 
-                                CLASS_STATUSBAR_NOTIF_MIUI, CLASS_RANKING_MAP, CLASS_NOTIF_DATA_ENTRY, addNotificationHook);
-                    }
-                } else if (Build.VERSION.SDK_INT > 19) {
-                    try {
-                        XposedHelpers.findAndHookMethod(CLASS_PHONE_STATUSBAR, lpparam.classLoader, "addNotification", 
-                                CLASS_STATUSBAR_NOTIF, CLASS_RANKING_MAP, addNotificationHook);
-                    } catch (NoSuchMethodError nme) {
-                        XposedHelpers.findAndHookMethod(CLASS_PHONE_STATUSBAR, lpparam.classLoader, "addNotification", 
-                                CLASS_STATUSBAR_NOTIF_MIUI, CLASS_RANKING_MAP, addNotificationHook);
-                    }
-                } else {
-                    try {
-                        XposedHelpers.findAndHookMethod(CLASS_PHONE_STATUSBAR, lpparam.classLoader, "addNotification", 
-                                IBinder.class, CLASS_STATUSBAR_NOTIF, addNotificationHook);
-                    } catch (NoSuchMethodError nme) {
-                        XposedHelpers.findAndHookMethod(CLASS_PHONE_STATUSBAR, lpparam.classLoader, "addNotification", 
-                                IBinder.class, CLASS_STATUSBAR_NOTIF_MIUI, addNotificationHook);
-                    }
-                }
+                });
 
                 // notification update
-                XC_MethodHook updateNotificationHook = new XC_MethodHook() {
+                XposedBridge.hookAllMethods(classBaseStatusbar, "updateNotification", new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         if (mDownloadProgressView != null) {
-                            try {
-                                int index = Build.VERSION.SDK_INT > 19 ? 0 : 1;
-                                mDownloadProgressView.onNotificationUpdated(param.args[index]);
-                            } catch (Throwable t) {
-                                XposedBridge.log(t);
+                            Object sbNotif = getSbNotificationFromArgs(param.args);
+                            if (sbNotif != null) {
+                                mDownloadProgressView.onNotificationUpdated(sbNotif);
+                            } else {
+                                log("updateNotification: Couldn't find StatusbarNotification in params");
                             }
                         }
                     }
-                };
-                if (Build.VERSION.SDK_INT > 19) {
-                    try {
-                        XposedHelpers.findAndHookMethod(CLASS_BASE_STATUSBAR, lpparam.classLoader, "updateNotification", 
-                                CLASS_STATUSBAR_NOTIF, CLASS_RANKING_MAP, updateNotificationHook);
-                    } catch (NoSuchMethodError nme) {
-                        XposedHelpers.findAndHookMethod(CLASS_BASE_STATUSBAR, lpparam.classLoader, "updateNotification", 
-                                CLASS_STATUSBAR_NOTIF_MIUI, CLASS_RANKING_MAP, updateNotificationHook);
-                    }
-                } else {
-                    try {
-                        XposedHelpers.findAndHookMethod(CLASS_BASE_STATUSBAR, lpparam.classLoader, "updateNotification", 
-                                IBinder.class, CLASS_STATUSBAR_NOTIF, updateNotificationHook);
-                    } catch (NoSuchMethodError nme) {
-                        XposedHelpers.findAndHookMethod(CLASS_BASE_STATUSBAR, lpparam.classLoader, "updateNotification", 
-                                IBinder.class, CLASS_STATUSBAR_NOTIF_MIUI, updateNotificationHook);
-                    }
-                }
+                });
 
                 // notification removal
-                XC_MethodHook removeNotificationViewsHook = new XC_MethodHook() {
+                XposedBridge.hookAllMethods(classBaseStatusbar, "removeNotificationViews", new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         if (mDownloadProgressView != null) {
@@ -186,18 +142,28 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                             }
                         }
                     }
-                };
-                if (Build.VERSION.SDK_INT > 19) {
-                    XposedHelpers.findAndHookMethod(CLASS_BASE_STATUSBAR, lpparam.classLoader, "removeNotificationViews",
-                            String.class, CLASS_RANKING_MAP, removeNotificationViewsHook);
-                } else {
-                    XposedHelpers.findAndHookMethod(CLASS_BASE_STATUSBAR, lpparam.classLoader, "removeNotificationViews",
-                            IBinder.class, removeNotificationViewsHook);
-                }
+                });
             } catch (Throwable t) {
                 XposedBridge.log(t);
             }
             
+        }
+    }
+
+    private Object getSbNotificationFromArgs(Object[] args) {
+        for (Object o : args) {
+            if (hasNotificationField(o))
+                return o;
+        }
+        return null;
+    }
+
+    private boolean hasNotificationField(Object o) {
+        try {
+            XposedHelpers.getObjectField(o, "notification");
+            return true;
+        } catch (Throwable t) {
+            return false;
         }
     }
 

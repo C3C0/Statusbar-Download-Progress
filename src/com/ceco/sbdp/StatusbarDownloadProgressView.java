@@ -231,6 +231,7 @@ public class StatusbarDownloadProgressView extends View {
                     tv.getVisibility() == View.VISIBLE) {
                 clock = tv;
                 if (ModSbdp.DEBUG) ModSbdp.log("findClockInUse: found " + clock);
+                break;
             }
         }
         return clock;
