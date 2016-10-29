@@ -1,3 +1,7 @@
+Changelog 2.2 - 29/10/2016
+--------------------------------------
+- Improved compatibility with various devices/ROMs
+
 Changelog 2.1 - 22/10/2016
 --------------------------------------
 - Improved compatibility of clock-based coloring
