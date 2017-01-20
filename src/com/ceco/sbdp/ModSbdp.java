@@ -15,7 +15,9 @@
 package com.ceco.sbdp;
 
 import android.os.Build;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextClock;
 import android.widget.TextView;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
@@ -79,20 +81,17 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                 });
 
                 try {
-                    XposedBridge.hookAllConstructors(
-                            XposedHelpers.findClass(CLASS_CLOCK, lpparam.classLoader),
-                            new XC_MethodHook() {
+                    XposedHelpers.findAndHookMethod(classPhoneStatusbarView, "onFinishInflate", new XC_MethodHook() {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            if (DEBUG) log("Clock constructed: " + param.thisObject);
-                            if (mDownloadProgressView != null &&
-                                    (param.thisObject instanceof TextView)) {
-                                mDownloadProgressView.addClock((TextView)param.thisObject);
+                            if (mDownloadProgressView != null) {
+                                mDownloadProgressView.setClock(
+                                        findClockIn((ViewGroup) param.thisObject));
                             }
                         }
                     });
                 } catch (Throwable t) {
-                    log("Error hooking clock: clock based coloring won't work");
+                    log("Error hooking onFinishInflate: clock based coloring won't work");
                 }
 
                 // new notification
@@ -165,6 +164,27 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
         } catch (Throwable t) {
             return false;
         }
+    }
+
+    public TextView findClockIn(ViewGroup vg) {
+        if (DEBUG) log("findClockIn: " + vg.getClass().getName());
+        TextView clock = null;
+        int childCount = vg.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View childView = vg.getChildAt(i);
+            if (childView instanceof ViewGroup) {
+                clock =  findClockIn((ViewGroup) childView);
+            } else if (childView.getClass().getName().equals(CLASS_CLOCK) ||
+                    (childView instanceof TextClock)) {
+                clock = (TextView) childView;
+            }
+            if (clock != null) {
+                if (DEBUG) log("findClockIn: clock found in " + vg.getClass().getName() + " as " +
+                        clock.getClass().getName());
+                break;
+            }
+        }
+        return clock;
     }
 
     @Override

@@ -24,7 +24,6 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -87,7 +86,7 @@ public class StatusbarDownloadProgressView extends View {
     private boolean mCentered;
     private int mHeightPx;
     private Demo mDemo;
-    private List<TextView> mClocks = new ArrayList<>();
+    private TextView mClock;
     private int mColor;
     private boolean mFollowClockColor;
     private boolean mSoundEnabled;
@@ -204,42 +203,17 @@ public class StatusbarDownloadProgressView extends View {
         context.registerReceiver(mBroadcastReceiver, intentFilter);
     }
 
-    public void addClock(TextView clock) {
-        if (clock != null && !mClocks.contains(clock)) {
-            mClocks.add(clock);
-            updateColor();
-        }
+    public void setClock(TextView clock) {
+        mClock = clock;
+        updateColor();
     }
 
     private void updateColor() {
         int color = mColor;
-        if (mFollowClockColor) {
-            TextView clock = findClockInUse();
-            if (clock != null) {
-                color = clock.getCurrentTextColor();
-            }
+        if (mFollowClockColor && mClock != null) {
+            color = mClock.getCurrentTextColor();
         }
         setBackgroundColor(color);
-    }
-
-    private TextView findClockInUse() {
-        if (mClocks.isEmpty()) return null;
-
-        TextView clock = mClocks.get(0);
-        for (TextView tv : mClocks) {
-            if (isViewAttachedToWindow(tv) &&
-                    tv.getVisibility() == View.VISIBLE) {
-                clock = tv;
-                if (ModSbdp.DEBUG) ModSbdp.log("findClockInUse: found " + clock);
-                break;
-            }
-        }
-        return clock;
-    }
-
-    @SuppressLint("NewApi")
-    private boolean isViewAttachedToWindow(View v) {
-        return (Build.VERSION.SDK_INT >= 19 ? v.isAttachedToWindow() : true);
     }
 
     @SuppressWarnings("deprecation")
