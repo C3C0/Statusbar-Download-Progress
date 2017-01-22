@@ -1,3 +1,7 @@
+Changelog 2.3 - 22/01/2017
+--------------------------------------
+- Fixed clock-based coloring on Samsung ROMs
+
 Changelog 2.2 - 29/10/2016
 --------------------------------------
 - Improved compatibility with various devices/ROMs
