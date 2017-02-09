@@ -15,6 +15,7 @@
  */
 package com.ceco.sbdp;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -41,6 +42,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -95,6 +97,8 @@ public class Settings extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        fixFolderPermissionsAsync();
+
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
                     .add(R.id.container, new PlaceholderFragment()).commit();
@@ -106,6 +110,18 @@ public class Settings extends Activity {
         if (!sSettingsFragment.handlePurchaseResult(requestCode, resultCode, data)) {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    private void fixFolderPermissionsAsync() {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                File sharedPrefsFolder = new File(getFilesDir().getAbsolutePath()
+                        + "/../shared_prefs");
+                sharedPrefsFolder.setExecutable(true, false);
+                sharedPrefsFolder.setReadable(true, false);
+            }
+        });
     }
 
     public static class PlaceholderFragment extends Fragment {
