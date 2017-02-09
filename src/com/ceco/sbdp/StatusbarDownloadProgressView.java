@@ -17,7 +17,9 @@ package com.ceco.sbdp;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
@@ -58,14 +60,17 @@ public class StatusbarDownloadProgressView extends View {
             "org.mozilla.fennec"
     ));
 
-    private static final int ANIM_DURATION = 400;
+    private static final int ANIM_DURATION = 400; // ms
+    private static final int INDEX_CYCLER_FREQUENCY = 5000; // ms
 
     class ProgressInfo {
+        String id;
         boolean hasProgressBar;
         int progress;
         int max;
 
-        public ProgressInfo(boolean hasProgressBar, int progress, int max) {
+        public ProgressInfo(String id, boolean hasProgressBar, int progress, int max) {
+            this.id = id;
             this.hasProgressBar = hasProgressBar;
             this.progress = progress;
             this.max = max;
@@ -79,7 +84,6 @@ public class StatusbarDownloadProgressView extends View {
     private enum Mode { OFF, TOP, BOTTOM };
     private Mode mMode;
     private int mEdgeMarginPx;
-    private String mId;
     private boolean mGodMode;
     private boolean mAnimated;
     private ObjectAnimator mAnimator;
@@ -93,6 +97,8 @@ public class StatusbarDownloadProgressView extends View {
     private String mSoundUri;
     private boolean mSoundWhenScreenOffOnly;
     private PowerManager mPowerManager;
+    private Map<String, ProgressInfo> mProgressList = new LinkedHashMap<String, ProgressInfo>();
+    private int mCurrentIndex = 0;
 
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @SuppressWarnings("deprecation")
@@ -102,7 +108,7 @@ public class StatusbarDownloadProgressView extends View {
                 if (intent.hasExtra(Settings.EXTRA_MODE)) {
                     mMode = Mode.valueOf(intent.getStringExtra(Settings.EXTRA_MODE));
                     if (mMode == Mode.OFF) {
-                        stopTracking();
+                        removeProgress(null);
                     } else {
                         updatePosition();
                     }
@@ -239,78 +245,132 @@ public class StatusbarDownloadProgressView extends View {
         setPivotX(mCentered ? w/2f : 0f);
     }
 
-    private void stopTracking() {
-        if (mId != null) {
-            maybePlaySound();
+    private void addProgress(ProgressInfo pi) {
+        synchronized (mProgressList) {
+            if (!mProgressList.containsKey(pi.id)) {
+                mProgressList.put(pi.id, pi);
+                if (ModSbdp.DEBUG) ModSbdp.log("addProgress: added progress for '" + pi.id + "'");
+                resetIndexCycler(mProgressList.size()-1);
+                updateProgressView(false);
+            } else if (ModSbdp.DEBUG) {
+                ModSbdp.log("addProgress: progress for '" + pi.id + "' already exists");
+            }
         }
-        mId = null;
-        updateProgress(null);
+    }
+
+    private void removeProgress(String id) {
+        synchronized (mProgressList) {
+            if (id == null) {
+                mProgressList.clear();
+                if (ModSbdp.DEBUG) ModSbdp.log("removeProgress: all cleared");
+            } else if (mProgressList.containsKey(id)) {
+                mProgressList.remove(id);
+                if (ModSbdp.DEBUG) ModSbdp.log("removeProgress: removed progress for '" + id + "'");
+                maybePlaySound();
+            }
+        }
+        resetIndexCycler(0);
+        updateProgressView(false);
+    }
+
+    private void updateProgress(String id, int max, int progress) {
+        ProgressInfo pi = mProgressList.get(id);
+        if (pi != null) {
+            pi.max = max;
+            pi.progress = progress;
+            if (ModSbdp.DEBUG) {
+                ModSbdp.log("updateProgress: updated progress for '" + id + "': " +
+                        "max=" + max + "; progress=" + progress);
+            }
+            updateProgressView(true);
+        }
+    }
+
+    private Runnable mIndexCyclerRunnable = new Runnable() {
+        @Override
+        public void run() {
+            final int oldIndex = mCurrentIndex++;
+            if (mCurrentIndex >= mProgressList.size()) mCurrentIndex = 0;
+            if (ModSbdp.DEBUG) ModSbdp.log("IndexCycler: oldIndex=" + oldIndex + "; " +
+                    "mCurrentIndex=" + mCurrentIndex);
+            if (mCurrentIndex != oldIndex) {
+                updateProgressView(false);
+            }
+            StatusbarDownloadProgressView.this.postDelayed(this, INDEX_CYCLER_FREQUENCY);
+        }
+    };
+
+    private void resetIndexCycler(int toIndex) {
+        removeCallbacks(mIndexCyclerRunnable);
+        mCurrentIndex = toIndex;
+        if (mProgressList.size() > 0) {
+            postDelayed(mIndexCyclerRunnable, INDEX_CYCLER_FREQUENCY);
+        }
     }
 
     public void onNotificationAdded(Object statusBarNotif) {
         if (mMode == Mode.OFF) return;
 
-        if (!verifyNotification(statusBarNotif)) {
+        ProgressInfo pi = verifyNotification(statusBarNotif);
+        if (pi == null) {
             if (ModSbdp.DEBUG) ModSbdp.log("onNotificationAdded: ignoring unsupported notification");
             return;
         }
 
-        if (mId != null) {
-            if (ModSbdp.DEBUG) ModSbdp.log("onNotificationAdded: another download already registered");
-            return;
-        }
-
-        mId = getIdentifier(statusBarNotif);
-        if (mId != null) {
-            if (ModSbdp.DEBUG) ModSbdp.log("starting progress for " + mId);
-            updateProgress(statusBarNotif);
-        }
+        addProgress(pi);
     }
 
     public void onNotificationUpdated(Object statusBarNotif) {
         if (mMode == Mode.OFF) return;
 
-        if (mId == null) {
-            // treat it as if it was added, e.g. to show progress in case
-            // feature has been enabled during already ongoing download
-            onNotificationAdded(statusBarNotif);
+        ProgressInfo pi = verifyNotification(statusBarNotif);
+        if (pi == null) {
+            String id = getIdentifier(statusBarNotif);
+            if (id != null && mProgressList.containsKey(id)) {
+                removeProgress(id);
+                if (ModSbdp.DEBUG) ModSbdp.log("onNotificationUpdated: removing no longer " +
+                        "supported notification for '" + id + "'");
+            } else if (ModSbdp.DEBUG) {
+                ModSbdp.log("onNotificationUpdated: ignoring unsupported notification");
+            }
             return;
         }
 
-        if (mId.equals(getIdentifier(statusBarNotif))) {
-            // if notification became clearable, stop tracking immediately
-            if ((Boolean) XposedHelpers.callMethod(statusBarNotif, "isClearable")) {
-                if (ModSbdp.DEBUG) ModSbdp.log("onNotificationUpdated: notification became clearable - stopping tracking");
-                stopTracking();
-            } else {
-                if (ModSbdp.DEBUG) ModSbdp.log("updating progress for " + mId);
-                updateProgress(statusBarNotif);
-            }
+        if (!mProgressList.containsKey(pi.id)) {
+            // treat it as if it was added, e.g. to show progress in case
+            // feature has been enabled during already ongoing download
+            addProgress(pi);
+        } else {
+            updateProgress(pi.id, pi.max, pi.progress);
         }
     }
 
     public void onNotificationRemoved(Object statusBarNotif) {
         if (mMode == Mode.OFF) return;
 
-        if (mId == null) {
-            if (ModSbdp.DEBUG) ModSbdp.log("onNotificationRemoved: no download registered");
-            return;
-        } else if (mId.equals(getIdentifier(statusBarNotif))) {
-            if (ModSbdp.DEBUG) ModSbdp.log("finishing progress for " + mId);
-            stopTracking();
+        String id = getIdentifier(statusBarNotif);
+        if (id != null && mProgressList.containsKey(id)) {
+            removeProgress(id);
         }
     }
 
-    private boolean verifyNotification(Object statusBarNotif) {
+    private ProgressInfo verifyNotification(Object statusBarNotif) {
         if (statusBarNotif == null || (Boolean) XposedHelpers.callMethod(statusBarNotif, "isClearable")) {
-            return false;
+            return null;
         }
+
+        String id = getIdentifier(statusBarNotif);
+        if (id == null)
+            return null;
 
         String pkgName = (String) XposedHelpers.getObjectField(statusBarNotif, "pkg");
         Notification n = (Notification) XposedHelpers.getObjectField(statusBarNotif, "notification");
-        return (n != null && 
-               (SUPPORTED_PACKAGES.contains(pkgName) || mGodMode) &&
-                getProgressInfo(n).hasProgressBar);
+        if (n != null && (SUPPORTED_PACKAGES.contains(pkgName) || mGodMode)) {
+            ProgressInfo pi = getProgressInfo(id, n);
+            if (pi != null && pi.hasProgressBar)
+                return pi;
+        }
+        return null;
     }
 
     protected String getIdentifier(Object statusBarNotif) {
@@ -333,14 +393,15 @@ public class StatusbarDownloadProgressView extends View {
         }
     }
 
-    private void updateProgress(Object statusBarNotif) {
-        if (statusBarNotif != null) {
-            Notification n = (Notification) XposedHelpers.getObjectField(statusBarNotif, "notification");
-            float newScaleX = getProgressInfo(n).getFraction();
-            if (ModSbdp.DEBUG) ModSbdp.log("updateProgress: newScaleX=" + newScaleX);
+    private void updateProgressView(boolean allowAnimation) {
+        if (!mProgressList.isEmpty()) {
+            ProgressInfo pi = (ProgressInfo) mProgressList.values().toArray()[mCurrentIndex];
+            float newScaleX = pi.getFraction();
+            if (ModSbdp.DEBUG) ModSbdp.log("updateProgressView: id='" + 
+                    pi.id + "'; newScaleX=" + newScaleX);
             setVisibility(View.VISIBLE);
             updateColor();
-            if (mAnimated) {
+            if (mAnimated && allowAnimation) {
                 animateScaleTo(newScaleX);
             } else {
                 setScaleX(newScaleX);
@@ -368,9 +429,10 @@ public class StatusbarDownloadProgressView extends View {
         if (ModSbdp.DEBUG) ModSbdp.log("Animating to new scaleX: " + newScaleX);
     }
 
-    private ProgressInfo getProgressInfo(Notification n) {
-        ProgressInfo pInfo = new ProgressInfo(false, 0, 0);
-        if (n == null) return pInfo;
+    private ProgressInfo getProgressInfo(String id, Notification n) {
+        if (id == null || n == null) return null;
+
+        ProgressInfo pInfo = new ProgressInfo(id, false, 0, 0);
 
         // We have to extract the information from the content view
         RemoteViews views = n.bigContentView;
@@ -400,12 +462,10 @@ public class StatusbarDownloadProgressView extends View {
                 if ("setMax".equals(methodName)) {
                     parcel.readInt(); // skip type value
                     pInfo.max = parcel.readInt();
-                    if (ModSbdp.DEBUG) ModSbdp.log("getProgress: total=" + pInfo.max);
                 } else if ("setProgress".equals(methodName)) {
                     parcel.readInt(); // skip type value
                     pInfo.progress = parcel.readInt();
                     pInfo.hasProgressBar = true;
-                    if (ModSbdp.DEBUG) ModSbdp.log("getProgress: current=" + pInfo.progress);
                 }
 
                 parcel.recycle();
@@ -432,7 +492,7 @@ public class StatusbarDownloadProgressView extends View {
         private boolean mDemoRunning;
 
         public void start() {
-            if (mId != null || mDemoRunning) {
+            if (!mProgressList.isEmpty() || mDemoRunning) {
                 return;
             }
             mDemoRunning = true;
@@ -444,7 +504,7 @@ public class StatusbarDownloadProgressView extends View {
 
         @Override
         public void run() {
-            if (mId != null) {
+            if (!mProgressList.isEmpty()) {
                 mDemoRunning = false;
             }
             if (!mDemoRunning) {
@@ -462,7 +522,7 @@ public class StatusbarDownloadProgressView extends View {
                 v.postDelayed(this, ANIM_DURATION + 300);
             } else {
                 maybePlaySound();
-                stopTracking();
+                updateProgressView(false);
                 mDemoRunning = false;
             }
         }
