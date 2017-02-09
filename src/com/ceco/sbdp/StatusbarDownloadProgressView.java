@@ -355,7 +355,7 @@ public class StatusbarDownloadProgressView extends View {
     }
 
     private ProgressInfo verifyNotification(Object statusBarNotif) {
-        if (statusBarNotif == null || (Boolean) XposedHelpers.callMethod(statusBarNotif, "isClearable")) {
+        if (statusBarNotif == null) {
             return null;
         }
 
