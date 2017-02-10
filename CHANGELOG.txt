@@ -1,3 +1,11 @@
+Changelog 3.0 - 10/02/2017
+--------------------------------------
+- Added support for multiple concurrent progress bar notifications:
+--- keeps track of all available progress bar notifications and switches between them
+- Added support for clearable notifications
+- Added logic for auto-hiding progress of idle notifications (those not updated for certain time period)
+- Other improvements for reliability and performance
+
 Changelog 2.3 - 22/01/2017
 --------------------------------------
 - Fixed clock-based coloring on Samsung ROMs
