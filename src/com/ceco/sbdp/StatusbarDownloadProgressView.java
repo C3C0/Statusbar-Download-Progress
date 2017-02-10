@@ -24,6 +24,8 @@ import java.util.Map;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.app.Notification;
@@ -261,7 +263,7 @@ public class StatusbarDownloadProgressView extends View {
                 mProgressList.put(pi.id, pi);
                 if (ModSbdp.DEBUG) ModSbdp.log("addProgress: added progress for '" + pi.id + "'");
                 resetIndexCycler(mProgressList.size()-1);
-                updateProgressView(false);
+                updateProgressView(true);
             } else if (ModSbdp.DEBUG) {
                 ModSbdp.log("addProgress: progress for '" + pi.id + "' already exists");
             }
@@ -280,7 +282,7 @@ public class StatusbarDownloadProgressView extends View {
             }
         }
         resetIndexCycler(0);
-        updateProgressView(false);
+        updateProgressView(true);
     }
 
     private void updateProgress(String id, int max, int progress) {
@@ -293,7 +295,7 @@ public class StatusbarDownloadProgressView extends View {
                 ModSbdp.log("updateProgress: updated progress for '" + id + "': " +
                         "max=" + max + "; progress=" + progress);
             }
-            updateProgressView(true);
+            updateProgressView(false);
         }
     }
 
@@ -320,7 +322,7 @@ public class StatusbarDownloadProgressView extends View {
             shouldUpdateView |= (mCurrentIndex != oldIndex);
 
             if (shouldUpdateView) {
-                updateProgressView(false);
+                updateProgressView(mCurrentIndex != oldIndex);
             }
 
             if (mProgressList.size() > 0) {
@@ -422,15 +424,19 @@ public class StatusbarDownloadProgressView extends View {
         }
     }
 
-    private void updateProgressView(boolean allowAnimation) {
+    private void updateProgressView(boolean fadeOutAndIn) {
         if (!mProgressList.isEmpty()) {
             ProgressInfo pi = (ProgressInfo) mProgressList.values().toArray()[mCurrentIndex];
             float newScaleX = pi.getFraction();
             if (ModSbdp.DEBUG) ModSbdp.log("updateProgressView: id='" + 
                     pi.id + "'; newScaleX=" + newScaleX);
-            setVisibility(View.VISIBLE);
             updateColor();
-            if (mAnimated && allowAnimation) {
+            if (getVisibility() != View.VISIBLE) {
+                clearAnimation();
+                fadeIn(newScaleX);
+            } else if (fadeOutAndIn) {
+                fadeOutAndIn(newScaleX);
+            } else if (mAnimated) {
                 animateScaleTo(newScaleX);
             } else {
                 setScaleX(newScaleX);
@@ -442,8 +448,7 @@ public class StatusbarDownloadProgressView extends View {
                     if (mAnimator.isStarted()) {
                         mAnimator.end();
                     }
-                    setScaleX(0f);
-                    setVisibility(View.GONE);
+                    fadeOut();
                 }
             }, ANIM_DURATION + 100);
         }
@@ -456,6 +461,46 @@ public class StatusbarDownloadProgressView extends View {
         mAnimator.setValues(PropertyValuesHolder.ofFloat("scaleX", getScaleX(), newScaleX));
         mAnimator.start();
         if (ModSbdp.DEBUG) ModSbdp.log("Animating to new scaleX: " + newScaleX);
+    }
+
+    private void fadeOutAndIn(final float newScaleX) {
+        animate()
+            .alpha(0f)
+            .setDuration(ANIM_DURATION / 2)
+            .setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    StatusbarDownloadProgressView.this.setScaleX(newScaleX);
+                    StatusbarDownloadProgressView.this.animate()
+                        .alpha(1f)
+                        .setDuration(ANIM_DURATION / 2)
+                        .setListener(null);
+                }
+            });
+    }
+
+    private void fadeIn(final float newScaleX) {
+        setAlpha(0f);
+        setScaleX(newScaleX);
+        setVisibility(View.VISIBLE);
+        animate()
+            .alpha(1f)
+            .setDuration(ANIM_DURATION)
+            .setListener(null);
+    }
+
+    private void fadeOut() {
+        animate()
+            .alpha(0f)
+            .setDuration(ANIM_DURATION)
+            .setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    StatusbarDownloadProgressView.this.setScaleX(0f);
+                    StatusbarDownloadProgressView.this.setVisibility(View.GONE);
+                    StatusbarDownloadProgressView.this.setAlpha(1f);
+                }
+            });
     }
 
     private ProgressInfo getProgressInfo(String id, Notification n) {
@@ -525,9 +570,7 @@ public class StatusbarDownloadProgressView extends View {
                 return;
             }
             mDemoRunning = true;
-            final View v = StatusbarDownloadProgressView.this;
-            v.setScaleX(0f);
-            v.setVisibility(View.VISIBLE);
+            fadeIn(0f);
             run();
         }
 
