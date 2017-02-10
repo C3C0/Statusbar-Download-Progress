@@ -62,22 +62,32 @@ public class StatusbarDownloadProgressView extends View {
 
     private static final int ANIM_DURATION = 400; // ms
     private static final int INDEX_CYCLER_FREQUENCY = 5000; // ms
+    private static final long MAX_IDLE_TIME = 10000; // ms
 
-    class ProgressInfo {
+    private static class ProgressInfo {
         String id;
         boolean hasProgressBar;
         int progress;
         int max;
+        long lastUpdatedMs;
 
-        public ProgressInfo(String id, boolean hasProgressBar, int progress, int max) {
+        ProgressInfo(String id, boolean hasProgressBar, int progress, int max) {
             this.id = id;
             this.hasProgressBar = hasProgressBar;
             this.progress = progress;
             this.max = max;
+            this.lastUpdatedMs = System.currentTimeMillis();
         }
 
-        public float getFraction() {
+        float getFraction() {
             return (max > 0 ? ((float)progress/(float)max) : 0f);
+        }
+
+        boolean isIdle() {
+            long idleTime = (System.currentTimeMillis() - this.lastUpdatedMs);
+            if (ModSbdp.DEBUG) ModSbdp.log("ProgressInfo: '" + this.id + 
+                    "' is idle for " + idleTime + "ms");
+            return (idleTime > MAX_IDLE_TIME);
         }
     }
 
@@ -108,7 +118,7 @@ public class StatusbarDownloadProgressView extends View {
                 if (intent.hasExtra(Settings.EXTRA_MODE)) {
                     mMode = Mode.valueOf(intent.getStringExtra(Settings.EXTRA_MODE));
                     if (mMode == Mode.OFF) {
-                        removeProgress(null);
+                        removeProgress(null, false);
                     } else {
                         updatePosition();
                     }
@@ -258,7 +268,7 @@ public class StatusbarDownloadProgressView extends View {
         }
     }
 
-    private void removeProgress(String id) {
+    private void removeProgress(String id, boolean allowSound) {
         synchronized (mProgressList) {
             if (id == null) {
                 mProgressList.clear();
@@ -266,7 +276,7 @@ public class StatusbarDownloadProgressView extends View {
             } else if (mProgressList.containsKey(id)) {
                 mProgressList.remove(id);
                 if (ModSbdp.DEBUG) ModSbdp.log("removeProgress: removed progress for '" + id + "'");
-                maybePlaySound();
+                if (allowSound) maybePlaySound();
             }
         }
         resetIndexCycler(0);
@@ -278,6 +288,7 @@ public class StatusbarDownloadProgressView extends View {
         if (pi != null) {
             pi.max = max;
             pi.progress = progress;
+            pi.lastUpdatedMs = System.currentTimeMillis();
             if (ModSbdp.DEBUG) {
                 ModSbdp.log("updateProgress: updated progress for '" + id + "': " +
                         "max=" + max + "; progress=" + progress);
@@ -289,14 +300,32 @@ public class StatusbarDownloadProgressView extends View {
     private Runnable mIndexCyclerRunnable = new Runnable() {
         @Override
         public void run() {
+            boolean shouldUpdateView = false;
+
+            // clear idle first
+            synchronized (mProgressList) {
+                List<String> toRemove = new ArrayList<>();
+                for (ProgressInfo pi : mProgressList.values())
+                    if (pi.isIdle()) toRemove.add(pi.id);
+                for (String id : toRemove)
+                    mProgressList.remove(id);
+                shouldUpdateView |= !toRemove.isEmpty();
+            }
+
+            // cycle index
             final int oldIndex = mCurrentIndex++;
             if (mCurrentIndex >= mProgressList.size()) mCurrentIndex = 0;
             if (ModSbdp.DEBUG) ModSbdp.log("IndexCycler: oldIndex=" + oldIndex + "; " +
                     "mCurrentIndex=" + mCurrentIndex);
-            if (mCurrentIndex != oldIndex) {
+            shouldUpdateView |= (mCurrentIndex != oldIndex);
+
+            if (shouldUpdateView) {
                 updateProgressView(false);
             }
-            StatusbarDownloadProgressView.this.postDelayed(this, INDEX_CYCLER_FREQUENCY);
+
+            if (mProgressList.size() > 0) {
+                StatusbarDownloadProgressView.this.postDelayed(this, INDEX_CYCLER_FREQUENCY);
+            }
         }
     };
 
@@ -327,7 +356,7 @@ public class StatusbarDownloadProgressView extends View {
         if (pi == null) {
             String id = getIdentifier(statusBarNotif);
             if (id != null && mProgressList.containsKey(id)) {
-                removeProgress(id);
+                removeProgress(id, true);
                 if (ModSbdp.DEBUG) ModSbdp.log("onNotificationUpdated: removing no longer " +
                         "supported notification for '" + id + "'");
             } else if (ModSbdp.DEBUG) {
@@ -350,7 +379,7 @@ public class StatusbarDownloadProgressView extends View {
 
         String id = getIdentifier(statusBarNotif);
         if (id != null && mProgressList.containsKey(id)) {
-            removeProgress(id);
+            removeProgress(id, true);
         }
     }
 
