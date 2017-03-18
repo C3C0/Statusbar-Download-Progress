@@ -1,3 +1,7 @@
+Changelog 3.1 - 18/03/2017
+--------------------------------------
+- Added info about Download Progress++ alternate app (Android 4.3+ only)
+
 Changelog 3.0 - 10/02/2017
 --------------------------------------
 - Added support for multiple concurrent progress bar notifications:

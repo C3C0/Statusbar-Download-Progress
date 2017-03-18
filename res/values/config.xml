@@ -16,7 +16,7 @@
 <resources>
 
     <string name="url_xda" translatable="false">http://forum.xda-developers.com/xposed/modules/app-statusbar-download-progress-v1-0-t2933867</string>
-    <string name="url_dppp_market" translatable="false">market://details?id=com.ceco.gravitybox.unlocker</string>
-    <string name="url_dppp_http" translatable="false">https://play.google.com/store/apps/details?id=com.ceco.gravitybox.unlocker</string>
+    <string name="url_dppp_market" translatable="false">market://details?id=com.ceco.sbdp.pro</string>
+    <string name="url_dppp_http" translatable="false">https://play.google.com/store/apps/details?id=com.ceco.sbdp.pro</string>
 
 </resources>
