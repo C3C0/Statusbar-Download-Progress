@@ -60,6 +60,8 @@ import android.widget.Toast;
 
 public class Settings extends Activity {
     public static final String PREF_CAT_KEY_OPTIONS = "pref_cat_options";
+    public static final String PREF_CAT_KEY_COLORS = "pref_cat_colors";
+    public static final String PREF_CAT_KEY_SOUNDS = "pref_cat_sounds";
     public static final String PREF_KEY_MODE = "pref_mode";
     public static final String PREF_KEY_EDGE_MARGIN = "pref_edge_margin2";
     public static final String PREF_KEY_COLOR = "pref_color";
@@ -183,6 +185,8 @@ public class Settings extends Activity {
                                                     IabHelper.OnConsumeMultiFinishedListener {
         private SharedPreferences mPrefs;
         private PreferenceCategory mPrefCatOptions;
+        private PreferenceCategory mPrefCatColors;
+        private PreferenceCategory mPrefCatSounds;
         private ListPreference mPrefMode;
         private Preference mPrefAbout;
         private ListPreference mPrefAboutDonate;
@@ -203,6 +207,8 @@ public class Settings extends Activity {
             mPrefs = getPreferenceScreen().getSharedPreferences();
 
             mPrefCatOptions = (PreferenceCategory) findPreference(PREF_CAT_KEY_OPTIONS);
+            mPrefCatColors = (PreferenceCategory) findPreference(PREF_CAT_KEY_COLORS);
+            mPrefCatSounds = (PreferenceCategory) findPreference(PREF_CAT_KEY_SOUNDS);
             mPrefMode = (ListPreference) findPreference(PREF_KEY_MODE);
 
             mPrefAbout = findPreference(PREF_KEY_ABOUT);
@@ -224,6 +230,8 @@ public class Settings extends Activity {
 
         protected void setOptionsEnabled(boolean enabled) {
             mPrefCatOptions.setEnabled(enabled);
+            mPrefCatColors.setEnabled(enabled);
+            mPrefCatSounds.setEnabled(enabled);
         }
 
         protected void updateSummaries() {
