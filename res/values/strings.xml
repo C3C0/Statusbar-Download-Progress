@@ -78,4 +78,14 @@
     <string name="pref_sound_screen_off_title">Only when screen is off</string>
     <string name="pref_sound_screen_off_summary">Plays notification sound only when screen is off</string>
 
+    <!-- Download Progress++ -->
+    <string name="pref_about_dppp_title">Download Progress++</string>
+    <string name="pref_about_dppp_summary">Find out more about alternate app that works without Xposed Framework</string>
+    <string name="dlg_dppp_msg">Download Progress++ allows you to:\n
+        &#8226; explicitly choose for which apps to track progress bar notifications\n
+        &#8226; does not require Xposed Framework nor Root\n
+        &#8226; supports all devices running Android 4.3 or later (SDK API 18+)</string>
+    <string name="dlg_dppp_ok">Yes, I\'m in</string>
+    <string name="dlg_dppp_cancel">Maybe later</string>
+
 </resources>

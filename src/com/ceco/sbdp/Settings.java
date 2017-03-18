@@ -28,11 +28,13 @@ import com.ceco.sbdp.billing.SkuDetails;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -62,6 +64,7 @@ public class Settings extends Activity {
     public static final String PREF_CAT_KEY_OPTIONS = "pref_cat_options";
     public static final String PREF_CAT_KEY_COLORS = "pref_cat_colors";
     public static final String PREF_CAT_KEY_SOUNDS = "pref_cat_sounds";
+    public static final String PREF_CAT_KEY_ABOUT = "pref_cat_about";
     public static final String PREF_KEY_MODE = "pref_mode";
     public static final String PREF_KEY_EDGE_MARGIN = "pref_edge_margin2";
     public static final String PREF_KEY_COLOR = "pref_color";
@@ -75,6 +78,7 @@ public class Settings extends Activity {
     public static final String PREF_KEY_SOUND_SCREEN_OFF = "pref_sound_screen_off";
 
     public static final String PREF_KEY_ABOUT = "pref_about";
+    public static final String PREF_KEY_ABOUT_DPPP = "pref_about_dppp";
     public static final String PREF_KEY_ABOUT_DONATE = "pref_about_donate";
     public static final String PREF_KEY_HIDE_LAUNCHER_ICON = "pref_hide_launcher_icon";
 
@@ -187,6 +191,7 @@ public class Settings extends Activity {
         private PreferenceCategory mPrefCatOptions;
         private PreferenceCategory mPrefCatColors;
         private PreferenceCategory mPrefCatSounds;
+        private PreferenceCategory mPrefCatAbout;
         private ListPreference mPrefMode;
         private Preference mPrefAbout;
         private ListPreference mPrefAboutDonate;
@@ -209,7 +214,10 @@ public class Settings extends Activity {
             mPrefCatOptions = (PreferenceCategory) findPreference(PREF_CAT_KEY_OPTIONS);
             mPrefCatColors = (PreferenceCategory) findPreference(PREF_CAT_KEY_COLORS);
             mPrefCatSounds = (PreferenceCategory) findPreference(PREF_CAT_KEY_SOUNDS);
+            mPrefCatAbout = (PreferenceCategory) findPreference(PREF_CAT_KEY_ABOUT);
             mPrefMode = (ListPreference) findPreference(PREF_KEY_MODE);
+            mPrefAboutDonate = (ListPreference) findPreference(PREF_KEY_ABOUT_DONATE);
+            mPrefSound = (RingtonePreference) findPreference(PREF_KEY_SOUND);
 
             mPrefAbout = findPreference(PREF_KEY_ABOUT);
             String version = "";
@@ -222,10 +230,12 @@ public class Settings extends Activity {
                 mPrefAbout.setTitle(getActivity().getTitle() + version);
             }
 
-            mPrefAboutDonate = (ListPreference) findPreference(PREF_KEY_ABOUT_DONATE);
-            mPrefAboutDonate.setOnPreferenceChangeListener(this);
-
-            mPrefSound = (RingtonePreference) findPreference(PREF_KEY_SOUND);
+            if (Build.VERSION.SDK_INT < 18) {
+                mPrefCatAbout.removePreference(findPreference(PREF_KEY_ABOUT_DPPP));
+                mPrefAboutDonate.setOnPreferenceChangeListener(this);
+            } else {
+                mPrefCatAbout.removePreference(mPrefAboutDonate);
+            }
         }
 
         protected void setOptionsEnabled(boolean enabled) {
@@ -253,8 +263,10 @@ public class Settings extends Activity {
         public void onStart() {
             super.onStart();
             mPrefs.registerOnSharedPreferenceChangeListener(this);
-            mIabHelper = new IabHelper(getActivity());
-            mIabHelper.startSetup(this);
+            if (Build.VERSION.SDK_INT < 18) {
+                mIabHelper = new IabHelper(getActivity());
+                mIabHelper.startSetup(this);
+            }
         }
 
         @Override
@@ -292,9 +304,37 @@ public class Settings extends Activity {
                     e.printStackTrace();
                 }
                 return true;
+            } else if (PREF_KEY_ABOUT_DPPP.equals(pref.getKey())) {
+                showDppDialog();
             }
 
             return super.onPreferenceTreeClick(prefScreen, pref);
+        }
+
+        private void showDppDialog() {
+            new AlertDialog.Builder(getActivity())
+                    .setTitle(R.string.pref_about_dppp_title)
+                    .setMessage(R.string.dlg_dppp_msg)
+                    .setCancelable(true)
+            .setPositiveButton(R.string.dlg_dppp_ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    showDppInPlayStore();
+                }})
+            .setNegativeButton(R.string.dlg_dppp_cancel, null)
+            .create().show();
+        }
+
+        private void showDppInPlayStore() {
+            try {
+                Intent intent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(getString(R.string.url_dppp_market)));
+                startActivity(intent);
+            } catch (android.content.ActivityNotFoundException anfe) {
+                Intent intent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(getString(R.string.url_dppp_http)));
+                startActivity(intent);
+            }
         }
 
         @Override

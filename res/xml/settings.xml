@@ -120,6 +120,12 @@
             android:key="pref_about" 
             android:summary="@string/pref_about_summary" />
 
+        <Preference
+            android:key="pref_about_dppp"
+            android:title="@string/pref_about_dppp_title"
+            android:summary="@string/pref_about_dppp_summary"
+            android:persistent="false" />
+
         <ListPreference
             android:key="pref_about_donate" 
             android:title="@string/pref_about_donate_title"

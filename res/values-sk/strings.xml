@@ -78,4 +78,14 @@
     <string name="pref_sound_screen_off_title">Len pri vypnutej obrazovke</string>
     <string name="pref_sound_screen_off_summary">Prehrá upozornenie len v prípade vypnutej obrazovky</string>
 
+    <!-- Download Progress++ -->
+    <string name="pref_about_dppp_title">Download Progress++</string>
+    <string name="pref_about_dppp_summary">K dispozícii alternatívna aplikácia, ktorá nevyžaduje Xposed Framweork</string>
+    <string name="dlg_dppp_msg">Download Progress++ umožňuje:\n
+        &#8226; explicitne definovať aplikácie, pre ktoré zobrazovať indikátor sťahovania\n
+        &#8226; nevyžaduje Xposed Framework ani Root\n
+        &#8226; podporuje všetky zariadenia s Android 4.3 alebo vyšším (SDK API 18+)</string>
+    <string name="dlg_dppp_ok">Mám záujem</string>
+    <string name="dlg_dppp_cancel">Možno neskôr</string>
+
 </resources>
