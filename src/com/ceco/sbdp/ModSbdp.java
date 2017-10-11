@@ -14,11 +14,9 @@
  */
 package com.ceco.sbdp;
 
-import android.app.Notification;
 import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RemoteViews;
 import android.widget.TextClock;
 import android.widget.TextView;
 import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -201,39 +199,6 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
             XposedBridge.log("SBDP:Android SDK: " + Build.VERSION.SDK_INT);
             XposedBridge.log("SBDP:Android Release: " + Build.VERSION.RELEASE);
             XposedBridge.log("SBDP:ROM: " + Build.DISPLAY);
-        }
-
-        if (Build.VERSION.SDK_INT >= 24) {
-            // Content views for apps targeting SDK24+ are not populated so we force them to
-            try {
-                XposedHelpers.findAndHookMethod(Notification.Builder.class, "build", new XC_MethodHook() {
-                    @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        Object style = XposedHelpers.getObjectField(param.thisObject, "mStyle");
-                        if (style == null || !(boolean)XposedHelpers.callMethod(style, "displayCustomViewInline")) {
-                            Notification n = (Notification) XposedHelpers.getObjectField(param.thisObject, "mN");
-                            if (n.contentView == null) {
-                                n.contentView = (RemoteViews) XposedHelpers.callMethod(
-                                        param.thisObject, "createContentView");
-                            }
-                            if (n.bigContentView == null) {
-                                n.bigContentView = (RemoteViews) XposedHelpers.callMethod(
-                                        param.thisObject, "createBigContentView");
-                            }
-                            if (DEBUG) log("Content views created for " + n);
-                        }
-                    }
-                });
-                XposedHelpers.findAndHookMethod(Notification.Builder.class, "maybeCloneStrippedForDelivery",
-                        Notification.class, new XC_MethodHook() {
-                    @Override
-                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        param.setResult(param.args[0]);
-                    }
-                });
-            } catch (Throwable t) {
-                log("builder hook: error populating content views");
-            }
         }
     }
 }

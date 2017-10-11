@@ -28,6 +28,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -65,6 +66,8 @@ public class StatusbarDownloadProgressView extends View {
     private static final int ANIM_DURATION = 400; // ms
     private static final int INDEX_CYCLER_FREQUENCY = 5000; // ms
     private static final long MAX_IDLE_TIME = 10000; // ms
+    private static final String EXTRA_PROGRESS = "android.progress";
+    private static final String EXTRA_PROGRESS_MAX = "android.progressMax";
 
     private static class ProgressInfo {
         String id;
@@ -503,8 +506,20 @@ public class StatusbarDownloadProgressView extends View {
             });
     }
 
+    @SuppressLint("NewApi")
     private ProgressInfo getProgressInfo(String id, Notification n) {
         if (id == null || n == null) return null;
+
+        if (Build.VERSION.SDK_INT >=18) {
+            if (n.extras.containsKey(EXTRA_PROGRESS) &&
+                n.extras.containsKey(EXTRA_PROGRESS_MAX) &&
+                n.extras.getInt(EXTRA_PROGRESS_MAX) > 0) {
+                return new ProgressInfo(id, true,
+                        n.extras.getInt(EXTRA_PROGRESS),
+                        n.extras.getInt(EXTRA_PROGRESS_MAX));
+            }
+            return null;
+        }
 
         ProgressInfo pInfo = new ProgressInfo(id, false, 0, 0);
 
