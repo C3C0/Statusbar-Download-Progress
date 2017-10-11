@@ -1,3 +1,7 @@
+Changelog 3.3 - 11/10/2017
+--------------------------------------
+- Simplify progress bar detection and extraction logic on SDK 18+
+
 Changelog 3.2 - 09/10/2017
 --------------------------------------
 - Adjusted for Nougat compatibility
