@@ -506,7 +506,8 @@ public class StatusbarDownloadProgressView extends View {
     private ProgressInfo getProgressInfo(String id, Notification n) {
         if (id == null || n == null) return null;
 
-        if (n.extras.containsKey(EXTRA_PROGRESS) &&
+        if (Build.VERSION.SDK_INT > 18 &&
+            n.extras.containsKey(EXTRA_PROGRESS) &&
             n.extras.containsKey(EXTRA_PROGRESS_MAX) &&
             n.extras.getInt(EXTRA_PROGRESS_MAX) > 0) {
             return new ProgressInfo(id,
