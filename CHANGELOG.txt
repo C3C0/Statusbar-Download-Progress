@@ -1,3 +1,7 @@
+Changelog 3.4 - 19/10/2017
+--------------------------------------
+- Fixed progress bar not showing for apps targeting ancient versions of Android
+
 Changelog 3.3 - 11/10/2017
 --------------------------------------
 - Simplify progress bar detection and extraction logic on SDK 18+
