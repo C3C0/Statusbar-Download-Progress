@@ -71,14 +71,12 @@ public class StatusbarDownloadProgressView extends View {
 
     private static class ProgressInfo {
         String id;
-        boolean hasProgressBar;
         int progress;
         int max;
         long lastUpdatedMs;
 
-        ProgressInfo(String id, boolean hasProgressBar, int progress, int max) {
+        ProgressInfo(String id, int progress, int max) {
             this.id = id;
-            this.hasProgressBar = hasProgressBar;
             this.progress = progress;
             this.max = max;
             this.lastUpdatedMs = System.currentTimeMillis();
@@ -400,9 +398,7 @@ public class StatusbarDownloadProgressView extends View {
         String pkgName = (String) XposedHelpers.getObjectField(statusBarNotif, "pkg");
         Notification n = (Notification) XposedHelpers.getObjectField(statusBarNotif, "notification");
         if (n != null && (SUPPORTED_PACKAGES.contains(pkgName) || mGodMode)) {
-            ProgressInfo pi = getProgressInfo(id, n);
-            if (pi != null && pi.hasProgressBar)
-                return pi;
+            return getProgressInfo(id, n);
         }
         return null;
     }
@@ -510,29 +506,30 @@ public class StatusbarDownloadProgressView extends View {
     private ProgressInfo getProgressInfo(String id, Notification n) {
         if (id == null || n == null) return null;
 
-        if (Build.VERSION.SDK_INT >=18) {
-            if (n.extras.containsKey(EXTRA_PROGRESS) &&
-                n.extras.containsKey(EXTRA_PROGRESS_MAX) &&
-                n.extras.getInt(EXTRA_PROGRESS_MAX) > 0) {
-                return new ProgressInfo(id, true,
-                        n.extras.getInt(EXTRA_PROGRESS),
-                        n.extras.getInt(EXTRA_PROGRESS_MAX));
-            }
-            return null;
+        if (n.extras.containsKey(EXTRA_PROGRESS) &&
+            n.extras.containsKey(EXTRA_PROGRESS_MAX) &&
+            n.extras.getInt(EXTRA_PROGRESS_MAX) > 0) {
+            return new ProgressInfo(id,
+                    n.extras.getInt(EXTRA_PROGRESS),
+                    n.extras.getInt(EXTRA_PROGRESS_MAX));
+        } else if (n.bigContentView != null) {
+            return getProgressInfoFromRemoteView(id, n.bigContentView);
+        } else if (n.contentView != null) {
+            return getProgressInfoFromRemoteView(id, n.contentView);
         }
 
-        ProgressInfo pInfo = new ProgressInfo(id, false, 0, 0);
+        return null;
+    }
 
-        // We have to extract the information from the content view
-        RemoteViews views = n.bigContentView;
-        if (views == null) views = n.contentView;
-        if (views == null) return pInfo;
+    private ProgressInfo getProgressInfoFromRemoteView(String id, RemoteViews view) {
+        int max = -1;
+        int progress = -1;
 
         try {
             @SuppressWarnings("unchecked")
             List<Parcelable> actions = (List<Parcelable>) 
-                XposedHelpers.getObjectField(views, "mActions");
-            if (actions == null) return pInfo;
+                XposedHelpers.getObjectField(view, "mActions");
+            if (actions == null) return null;
 
             for (Parcelable p : actions) {
                 Parcel parcel = Parcel.obtain();
@@ -550,11 +547,12 @@ public class StatusbarDownloadProgressView extends View {
                 String methodName = parcel.readString();
                 if ("setMax".equals(methodName)) {
                     parcel.readInt(); // skip type value
-                    pInfo.max = parcel.readInt();
+                    max = parcel.readInt();
+                    if (ModSbdp.DEBUG) ModSbdp.log("getProgressInfoFromRemoteView: max=" + max);
                 } else if ("setProgress".equals(methodName)) {
                     parcel.readInt(); // skip type value
-                    pInfo.progress = parcel.readInt();
-                    pInfo.hasProgressBar = true;
+                    progress = parcel.readInt();
+                    if (ModSbdp.DEBUG) ModSbdp.log("getProgressInfoFromRemoteView: progress=" + progress);
                 }
 
                 parcel.recycle();
@@ -563,7 +561,8 @@ public class StatusbarDownloadProgressView extends View {
             XposedBridge.log(t);
         }
 
-        return pInfo;
+        return (max != -1 && progress != -1) ?
+                new ProgressInfo(id, progress, max) : null;
     }
 
     private void updatePosition() {
