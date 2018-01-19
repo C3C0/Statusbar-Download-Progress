@@ -103,7 +103,7 @@ public class Settings extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        fixFolderPermissionsAsync();
+        fixFolderPermissionsAsync(this);
 
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
@@ -118,19 +118,25 @@ public class Settings extends Activity {
         }
     }
 
-    private void fixFolderPermissionsAsync() {
+    private static void fixFolderPermissionsAsync(final Context context) {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
+                // main dir
+                File pkgFolder = Utils.getDataDir(context);
+                if (pkgFolder.exists()) {
+                    pkgFolder.setExecutable(true, false);
+                    pkgFolder.setReadable(true, false);
+                }
                 // prefs folder
-                File sharedPrefsFolder = new File(Utils.getDataDir(Settings.this)
+                File sharedPrefsFolder = new File(Utils.getDataDir(context)
                         + "/shared_prefs");
                 Utils.log("sharedPrefsFolder=" + sharedPrefsFolder);
                 sharedPrefsFolder.setExecutable(true, false);
                 sharedPrefsFolder.setReadable(true, false);
                 // prefs file
                 File prefs = new File(sharedPrefsFolder.getAbsolutePath() + "/" + 
-                        Settings.this.getPackageName() +  "_preferences.xml");
+                        context.getPackageName() +  "_preferences.xml");
                 Utils.log("prefs=" + prefs);
                 if (prefs.exists()) {
                     prefs.setReadable(true, false);
@@ -293,6 +299,7 @@ public class Settings extends Activity {
         @Override
         public void onPause() {
             super.onPause();
+            fixFolderPermissionsAsync(getActivity());
             if (mPrefAboutDonate.getDialog() != null &&
                     mPrefAboutDonate.getDialog().isShowing()) {
                 mPrefAboutDonate.getDialog().dismiss();

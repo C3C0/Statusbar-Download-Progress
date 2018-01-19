@@ -42,7 +42,7 @@ public class Utils {
             return ctx.isDeviceProtectedStorage() ?
                     ctx.getDataDir() : ctx.createDeviceProtectedStorageContext().getDataDir();
         }
-        return ctx.getDataDir();
+        return new File(ctx.getFilesDir().getAbsolutePath() + "/..");
     }
 
     public static void log(String message) {
