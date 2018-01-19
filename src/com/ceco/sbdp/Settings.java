@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Peter Gregus (C3C076@xda)
+ * Copyright (C) 2018 Peter Gregus (C3C076@xda)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -122,10 +122,19 @@ public class Settings extends Activity {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
-                File sharedPrefsFolder = new File(getFilesDir().getAbsolutePath()
-                        + "/../shared_prefs");
+                // prefs folder
+                File sharedPrefsFolder = new File(Utils.getDataDir(Settings.this)
+                        + "/shared_prefs");
+                Utils.log("sharedPrefsFolder=" + sharedPrefsFolder);
                 sharedPrefsFolder.setExecutable(true, false);
                 sharedPrefsFolder.setReadable(true, false);
+                // prefs file
+                File prefs = new File(sharedPrefsFolder.getAbsolutePath() + "/" + 
+                        Settings.this.getPackageName() +  "_preferences.xml");
+                Utils.log("prefs=" + prefs);
+                if (prefs.exists()) {
+                    prefs.setReadable(true, false);
+                }
             }
         });
     }
@@ -201,12 +210,14 @@ public class Settings extends Activity {
         private static List<String> sSkuList = new ArrayList<String>(Arrays.asList(
                 "sbdp_001", "sbdp_002", "sbdp_003", "sbdp_004", "sbdp_005"));
 
-        @SuppressWarnings("deprecation")
+        @SuppressLint("NewApi")
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
-            getPreferenceManager().setSharedPreferencesMode(Context.MODE_WORLD_READABLE);
+            if (Utils.USE_DEVICE_PROTECTED_STORAGE) {
+                getPreferenceManager().setStorageDeviceProtected();
+            }
             addPreferencesFromResource(R.xml.settings);
 
             mPrefs = getPreferenceScreen().getSharedPreferences();

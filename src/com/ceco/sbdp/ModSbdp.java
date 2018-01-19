@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Peter Gregus (C3C076@xda)
+ * Copyright (C) 2018 Peter Gregus (C3C076@xda)
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,6 +13,8 @@
  * limitations under the License.
  */
 package com.ceco.sbdp;
+
+import java.io.File;
 
 import android.os.Build;
 import android.view.View;
@@ -45,6 +47,19 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
 
     public static void log(String message) {
         XposedBridge.log(TAG + ": " + message);
+    }
+
+    public static final XSharedPreferences getXSharedPreferences() {
+        if (Utils.USE_DEVICE_PROTECTED_STORAGE) {
+            String prefsPath = "/data/user_de/0/" + PACKAGE_NAME_MODULE + 
+                    "/shared_prefs/" +
+                    PACKAGE_NAME_MODULE + "_preferences.xml";
+            if (DEBUG) log("Preferences: " + prefsPath);
+            return new XSharedPreferences(new File(prefsPath));
+        } else {
+            if (DEBUG) log("Preferences: using default storage");
+            return new XSharedPreferences(ModSbdp.PACKAGE_NAME_MODULE);
+        }
     }
 
     private StatusbarDownloadProgressView mDownloadProgressView;

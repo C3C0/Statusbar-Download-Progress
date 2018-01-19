@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Peter Gregus (C3C076@xda)
+ * Copyright (C) 2018 Peter Gregus (C3C076@xda)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -178,7 +178,7 @@ public class StatusbarDownloadProgressView extends View {
     public StatusbarDownloadProgressView(Context context) {
         super(context);
 
-        XSharedPreferences prefs = new XSharedPreferences(ModSbdp.PACKAGE_NAME_MODULE);
+        XSharedPreferences prefs = ModSbdp.getXSharedPreferences();
         mMode = Mode.valueOf(prefs.getString(Settings.PREF_KEY_MODE, "TOP"));
         mEdgeMarginPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 prefs.getInt(Settings.PREF_KEY_EDGE_MARGIN, 0),
@@ -502,6 +502,7 @@ public class StatusbarDownloadProgressView extends View {
             });
     }
 
+    @SuppressWarnings("deprecation")
     @SuppressLint("NewApi")
     private ProgressInfo getProgressInfo(String id, Notification n) {
         if (id == null || n == null) return null;
