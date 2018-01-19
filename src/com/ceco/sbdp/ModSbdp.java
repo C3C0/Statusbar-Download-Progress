@@ -33,8 +33,12 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
     public static final String PACKAGE_NAME_MODULE = ModSbdp.class.getPackage().getName();
     public static final String PACKAGE_NAME_SYSTEMUI = "com.android.systemui";
     public static final String CLASS_PHONE_STATUSBAR_VIEW = "com.android.systemui.statusbar.phone.PhoneStatusBarView";
-    public static final String CLASS_PHONE_STATUSBAR = "com.android.systemui.statusbar.phone.PhoneStatusBar";
-    public static final String CLASS_BASE_STATUSBAR = "com.android.systemui.statusbar.BaseStatusBar";
+    public static final String CLASS_PHONE_STATUSBAR = Build.VERSION.SDK_INT >= 26 ?
+            "com.android.systemui.statusbar.phone.StatusBar" :
+            "com.android.systemui.statusbar.phone.PhoneStatusBar";
+    public static final String CLASS_BASE_STATUSBAR = Build.VERSION.SDK_INT >= 26 ?
+            "com.android.systemui.statusbar.phone.StatusBar" :
+            "com.android.systemui.statusbar.BaseStatusBar";
     public static final String CLASS_NOTIF_DATA_ENTRY = "com.android.systemui.statusbar.NotificationData$Entry";
     public static final String CLASS_CLOCK = "com.android.systemui.statusbar.policy.Clock";
     public static final boolean DEBUG = false;
@@ -151,15 +155,16 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
 
     private Object getSbNotificationFromArgs(Object[] args) {
         for (Object o : args) {
-            if (hasNotificationField(o))
+            if (hasRequiredFields(o))
                 return o;
         }
         return null;
     }
 
-    private boolean hasNotificationField(Object o) {
+    private boolean hasRequiredFields(Object o) {
         try {
             XposedHelpers.getObjectField(o, "notification");
+            XposedHelpers.getObjectField(o, "pkg");
             return true;
         } catch (Throwable t) {
             return false;
