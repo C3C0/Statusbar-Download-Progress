@@ -1,3 +1,7 @@
+Changelog 3.6 - 19/01/2018
+--------------------------------------
+- Fixed crash on pre-Nougat devices
+
 Changelog 3.5 - 19/01/2018
 --------------------------------------
 - Updated for Android Oreo
