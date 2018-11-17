@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ * Copyright (C) 2014 Peter Gregus (C3C076@xda)
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+<resources>
+
+    <string name="app_name">Statusbar download progress</string>
+    <string name="app_desc">"Android'in standart indirme yöneticisi ile yapılan indirme işlemleri için durum çubuğunda indirme ilerleme çubuğu gösterir"</string>
+
+    <string name="module_not_active">"Modül etkin değil. Modülü etkinleştirmek ve cihazınızı yeniden başlatmak için Xposed Installer'ı kullanın."</string>
+
+    <!-- Options -->
+    <string name="pref_cat_options_title">Seçenekler</string>
+
+    <string name="pref_mode_title">Mod</string>
+    <string name="sb_download_progress_off">Devre dışı</string>
+    <string name="sb_download_progress_top">Üst kenar</string>
+    <string name="sb_download_progress_bottom">Alt kenar</string>
+
+    <string name="pref_edge_margin_title">Kenar boşluğu</string>
+
+    <!-- About -->
+    <string name="pref_cat_about_title">Hakkında</string>
+    <string name="pref_about_summary">"XDA'dan C3C076 tarafından geliştirildi. Resmi tartışmayı ziyaret etmek için dokunun."</string>
+    <string name="pref_about_donate_title">Geliştiriciyi destekle</string>
+    <string name="pref_about_donate_waiting">Google faturalandırma hizmetlerini bekliyor&#8230;</string>
+    <string name="pref_about_donate_error">Google faturalandırma hizmetleriyle iletişim kurulamadı</string>
+    <string name="pref_about_donate_no_items">Şu anda uygulama içi bağış öğesi yok</string>
+    <string name="pref_about_donate_summary">Uygulama içi bağışı başlatmak için dokunun</string>
+    <string name="donate_transaction_error">Bağış işlemi başarısız</string>
+    <string name="donate_transaction_ok">Bağış işlemi başarılı. Desteğiniz için çok teşekkürler!</string>
+
+    <!-- Hide launcher icon -->
+    <string name="pref_hide_launcher_icon_title">Başlatıcı simgesini gizle</string>
+    <string name="pref_hide_launcher_icon_summary">Başlatıcıyı yeniden başlatmak gerekebilir</string>
+
+    <!-- Progress bar color -->
+    <string name="pref_cat_colors_title">Renkler</string>
+    <string name="dialog_color_picker">Renk seçici</string>
+    <string name="press_color_to_apply">Uygulamak için renge dokunun</string>
+    <string name="pref_color_title">Renk</string>
+    <string name="pref_color_follow_clock_title">Saat rengini takip et</string>
+
+    <!-- God mode -->
+    <string name="pref_god_mode_title">Gelişmiş mod</string>
+    <string name="pref_god_mode_summary">İlerleme çubuğu içeren devam eden bildirime sahip herhangi bir uygulamanın ilerleme durumunu göstermeye çalışır</string>
+
+    <!-- Animated -->
+    <string name="pref_animated_title">Hareketli</string>
+
+    <!-- Centered -->
+    <string name="pref_centered_title">Ortalanmış</string>
+
+    <!-- Thickness -->
+    <string name="pref_thickness_title">Kalınlık</string>
+
+    <!-- Preview -->
+    <string name="preview">Önizleme</string>
+
+    <!-- Sounds -->
+    <string name="pref_cat_sounds_title">Sesler</string>
+    <string name="pref_sound_enable_title">Sesi etkinleştir</string>
+    <string name="pref_sound_enable_summary">Aktarım bittiğinde veya kesildiğinde bildirim sesi çalar</string>
+    <string name="pref_sound_title">Ses seç</string>
+    <string name="pref_sound_screen_off_title">Yalnızca ekran kapalıyken</string>
+    <string name="pref_sound_screen_off_summary">Bildirim sesini yalnızca ekran kapalıyken çalar</string>
+
+    <!-- Download Progress++ -->
+    <string name="pref_about_dppp_title">Download Progress++</string>
+    <string name="pref_about_dppp_summary">Xposed Framework olmadan çalışan alternatif uygulama hakkında daha fazla bilgi edinin</string>
+    <string name="dlg_dppp_msg">Download Progress++ uygulamasının farkları:\n
+        &#8226; hangi uygulamaların ilerleme çubuğu bildirimlerini izleyeceğini açıkça seçebilme\n
+        &#8226; Xposed Framework veya Root gerekmemesi\n
+        &#8226; Android 4.3 veya sonraki sürümlerini (SDK API 18) çalıştıran tüm cihazlarda kullanabilme</string>
+    <string name="dlg_dppp_ok">Evet, Olur</string>
+    <string name="dlg_dppp_cancel">Belki sonra</string>
+
+</resources>
