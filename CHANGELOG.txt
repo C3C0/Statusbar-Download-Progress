@@ -1,3 +1,7 @@
+Changelog 3.6.1 - 23/11/2018
+--------------------------------------
+- Added Turkish translations (thanks to Fatih Firinci)
+
 Changelog 3.6 - 19/01/2018
 --------------------------------------
 - Fixed crash on pre-Nougat devices
