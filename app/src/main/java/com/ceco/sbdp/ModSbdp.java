@@ -17,6 +17,7 @@ package com.ceco.sbdp;
 import java.io.File;
 
 import android.os.Build;
+import android.service.notification.NotificationListenerService;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextClock;
@@ -45,6 +46,7 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
             "com.android.systemui.statusbar.BaseStatusBar";
     private static final String CLASS_NOTIF_DATA_ENTRY = "com.android.systemui.statusbar.NotificationData$Entry";
     private static final String CLASS_CLOCK = "com.android.systemui.statusbar.policy.Clock";
+    private static final String CLASS_NOTIF_ENTRY_MANAGER = "com.android.systemui.statusbar.NotificationEntryManager";
 
     static void log(String message) {
         XposedBridge.log(TAG + ": " + message);
@@ -90,6 +92,12 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                 Class<?> classBaseStatusbar = XposedHelpers.findClass(CLASS_BASE_STATUSBAR,
                         lpparam.classLoader);
 
+                Class<?> classNotifEntryManager = null;
+                if (Build.VERSION.SDK_INT >= 28) {
+                    classNotifEntryManager = XposedHelpers.findClass(CLASS_NOTIF_ENTRY_MANAGER,
+                            lpparam.classLoader);
+                }
+
                 XposedBridge.hookAllConstructors(classPhoneStatusbarView, new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) {
@@ -115,7 +123,9 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                 }
 
                 // new notification
-                XposedBridge.hookAllMethods(classPhoneStatusbar, "addNotification", new XC_MethodHook() {
+                XposedBridge.hookAllMethods(Build.VERSION.SDK_INT >=28 ?
+                                classNotifEntryManager : classPhoneStatusbar,
+                        "addNotification", new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) {
                         if (mDownloadProgressView != null) {
@@ -130,7 +140,9 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                 });
 
                 // notification update
-                XposedBridge.hookAllMethods(classBaseStatusbar, "updateNotification", new XC_MethodHook() {
+                XposedBridge.hookAllMethods(Build.VERSION.SDK_INT >= 28 ?
+                                classNotifEntryManager : classBaseStatusbar,
+                        "updateNotification", new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) {
                         if (mDownloadProgressView != null) {
@@ -145,23 +157,40 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                 });
 
                 // notification removal
-                XposedBridge.hookAllMethods(classBaseStatusbar, "removeNotificationViews", new XC_MethodHook() {
-                    @Override
-                    protected void afterHookedMethod(MethodHookParam param) {
-                        if (mDownloadProgressView != null) {
-                            try {
-                                Object result = param.getResult();
-                                if (result != null) {
-                                    Object statusBarNotif = CLASS_NOTIF_DATA_ENTRY.equals(result.getClass().getName()) ?
-                                                XposedHelpers.getObjectField(result, "notification") : result;
-                                    mDownloadProgressView.onNotificationRemoved(statusBarNotif);
+                if (Build.VERSION.SDK_INT >= 28) {
+                    XposedHelpers.findAndHookMethod(classNotifEntryManager, "removeNotification",
+                            String.class, NotificationListenerService.RankingMap.class, new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) {
+                            if (mDownloadProgressView != null) {
+                                Object notifData = XposedHelpers.getObjectField(param.thisObject, "mNotificationData");
+                                Object entry = XposedHelpers.callMethod(notifData, "get", param.args[0]);
+                                if (entry != null) {
+                                    mDownloadProgressView.onNotificationRemoved(
+                                            XposedHelpers.getObjectField(entry, "notification"));
                                 }
-                            } catch (Throwable t) {
-                                XposedBridge.log(t);
                             }
                         }
-                    }
-                });
+                    });
+                } else {
+                    XposedBridge.hookAllMethods(classBaseStatusbar, "removeNotificationViews", new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) {
+                            if (mDownloadProgressView != null) {
+                                try {
+                                    Object result = param.getResult();
+                                    if (result != null) {
+                                        Object statusBarNotif = CLASS_NOTIF_DATA_ENTRY.equals(result.getClass().getName()) ?
+                                                XposedHelpers.getObjectField(result, "notification") : result;
+                                        mDownloadProgressView.onNotificationRemoved(statusBarNotif);
+                                    }
+                                } catch (Throwable t) {
+                                    XposedBridge.log(t);
+                                }
+                            }
+                        }
+                    });
+                }
             } catch (Throwable t) {
                 XposedBridge.log(t);
             }
