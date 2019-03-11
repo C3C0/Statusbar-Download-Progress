@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Peter Gregus (C3C076@xda)
+ * Copyright (C) 2019 Peter Gregus (C3C076@xda)
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -31,25 +31,26 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 
 public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
-    public static final String TAG = "SBDP";
-    public static final String PACKAGE_NAME_MODULE = ModSbdp.class.getPackage().getName();
-    public static final String PACKAGE_NAME_SYSTEMUI = "com.android.systemui";
-    public static final String CLASS_PHONE_STATUSBAR_VIEW = "com.android.systemui.statusbar.phone.PhoneStatusBarView";
-    public static final String CLASS_PHONE_STATUSBAR = Build.VERSION.SDK_INT >= 26 ?
+    private static final String TAG = "SBDP";
+    static final boolean DEBUG = false;
+
+    private static final String PACKAGE_NAME_MODULE = ModSbdp.class.getPackage().getName();
+    private static final String PACKAGE_NAME_SYSTEMUI = "com.android.systemui";
+    private static final String CLASS_PHONE_STATUSBAR_VIEW = "com.android.systemui.statusbar.phone.PhoneStatusBarView";
+    private static final String CLASS_PHONE_STATUSBAR = Build.VERSION.SDK_INT >= 26 ?
             "com.android.systemui.statusbar.phone.StatusBar" :
             "com.android.systemui.statusbar.phone.PhoneStatusBar";
-    public static final String CLASS_BASE_STATUSBAR = Build.VERSION.SDK_INT >= 26 ?
+    private static final String CLASS_BASE_STATUSBAR = Build.VERSION.SDK_INT >= 26 ?
             "com.android.systemui.statusbar.phone.StatusBar" :
             "com.android.systemui.statusbar.BaseStatusBar";
-    public static final String CLASS_NOTIF_DATA_ENTRY = "com.android.systemui.statusbar.NotificationData$Entry";
-    public static final String CLASS_CLOCK = "com.android.systemui.statusbar.policy.Clock";
-    public static final boolean DEBUG = false;
+    private static final String CLASS_NOTIF_DATA_ENTRY = "com.android.systemui.statusbar.NotificationData$Entry";
+    private static final String CLASS_CLOCK = "com.android.systemui.statusbar.policy.Clock";
 
-    public static void log(String message) {
+    static void log(String message) {
         XposedBridge.log(TAG + ": " + message);
     }
 
-    public static final XSharedPreferences getXSharedPreferences() {
+    static XSharedPreferences getXSharedPreferences() {
         if (Utils.USE_DEVICE_PROTECTED_STORAGE) {
             String prefsPath = "/data/user_de/0/" + PACKAGE_NAME_MODULE + 
                     "/shared_prefs/" +
@@ -65,14 +66,14 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
     private StatusbarDownloadProgressView mDownloadProgressView;
 
     @Override
-    public void handleLoadPackage(LoadPackageParam lpparam) throws Throwable {
+    public void handleLoadPackage(LoadPackageParam lpparam) {
         // module package
         if (lpparam.packageName.equals(PACKAGE_NAME_MODULE)) {
             try {
                 if (DEBUG) log("Hooking isModuleActive method");
                 XposedHelpers.findAndHookMethod(Settings.PlaceholderFragment.class.getName(), 
                         lpparam.classLoader, "isModuleActive",
-                        XC_MethodReplacement.returnConstant(Boolean.valueOf(true)));
+                        XC_MethodReplacement.returnConstant(Boolean.TRUE));
             } catch (Throwable t) {
                 XposedBridge.log(t);
             }
@@ -91,7 +92,7 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
 
                 XposedBridge.hookAllConstructors(classPhoneStatusbarView, new XC_MethodHook() {
                     @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    protected void afterHookedMethod(MethodHookParam param) {
                         ViewGroup sbVg = (ViewGroup) param.thisObject;
                         mDownloadProgressView = new StatusbarDownloadProgressView(sbVg.getContext());
                         sbVg.addView(mDownloadProgressView);
@@ -102,7 +103,7 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                 try {
                     XposedHelpers.findAndHookMethod(classPhoneStatusbarView, "onFinishInflate", new XC_MethodHook() {
                         @Override
-                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        protected void afterHookedMethod(MethodHookParam param) {
                             if (mDownloadProgressView != null) {
                                 mDownloadProgressView.setClock(
                                         findClockIn((ViewGroup) param.thisObject));
@@ -116,7 +117,7 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                 // new notification
                 XposedBridge.hookAllMethods(classPhoneStatusbar, "addNotification", new XC_MethodHook() {
                     @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    protected void afterHookedMethod(MethodHookParam param) {
                         if (mDownloadProgressView != null) {
                             Object sbNotif = getSbNotificationFromArgs(param.args);
                             if (sbNotif != null) {
@@ -131,7 +132,7 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                 // notification update
                 XposedBridge.hookAllMethods(classBaseStatusbar, "updateNotification", new XC_MethodHook() {
                     @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    protected void afterHookedMethod(MethodHookParam param) {
                         if (mDownloadProgressView != null) {
                             Object sbNotif = getSbNotificationFromArgs(param.args);
                             if (sbNotif != null) {
@@ -146,7 +147,7 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                 // notification removal
                 XposedBridge.hookAllMethods(classBaseStatusbar, "removeNotificationViews", new XC_MethodHook() {
                     @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    protected void afterHookedMethod(MethodHookParam param) {
                         if (mDownloadProgressView != null) {
                             try {
                                 Object result = param.getResult();
@@ -186,7 +187,7 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
         }
     }
 
-    public TextView findClockIn(ViewGroup vg) {
+    private TextView findClockIn(ViewGroup vg) {
         if (DEBUG) log("findClockIn: " + vg.getClass().getName());
         TextView clock = null;
         int childCount = vg.getChildCount();
@@ -195,7 +196,7 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
             if (childView instanceof ViewGroup) {
                 clock =  findClockIn((ViewGroup) childView);
             } else if (childView.getClass().getName().equals(CLASS_CLOCK) ||
-                    (childView instanceof TextClock)) {
+                    (Build.VERSION.SDK_INT >= 17 && childView instanceof TextClock)) {
                 clock = (TextView) childView;
             }
             if (clock != null) {

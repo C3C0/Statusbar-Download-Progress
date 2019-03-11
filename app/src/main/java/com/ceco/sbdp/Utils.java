@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Peter Gregus (C3C076@xda)
+ * Copyright (C) 2019 Peter Gregus (C3C076@xda)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import android.util.Log;
 
 public class Utils {
 
-    public static final boolean USE_DEVICE_PROTECTED_STORAGE = Build.VERSION.SDK_INT >= 24;
+    static final boolean USE_DEVICE_PROTECTED_STORAGE = Build.VERSION.SDK_INT >= 24;
     private static final String TAG = "SBDP";
     private static final boolean DEBUG = false;
 
@@ -37,7 +37,7 @@ public class Utils {
     }
 
     @SuppressLint("NewApi")
-    public static File getDataDir(Context ctx) {
+    static File getDataDir(Context ctx) {
         if (USE_DEVICE_PROTECTED_STORAGE) {
             return ctx.isDeviceProtectedStorage() ?
                     ctx.getDataDir() : ctx.createDeviceProtectedStorageContext().getDataDir();
@@ -45,7 +45,7 @@ public class Utils {
         return new File(ctx.getFilesDir().getAbsolutePath() + "/..");
     }
 
-    public static void log(String message) {
+    static void log(String message) {
         if (DEBUG) {
             Log.d(TAG, message);
         }

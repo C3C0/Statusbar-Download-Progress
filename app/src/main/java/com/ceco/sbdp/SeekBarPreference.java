@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Peter Gregus (C3C076@xda)
+ * Copyright (C) 2019 Peter Gregus (C3C076@xda)
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,10 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.ceco.sbdp;
-
-import com.ceco.sbdp.R;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -77,18 +74,19 @@ public class SeekBarPreference extends Preference
 
     @Override
     protected View onCreateView(ViewGroup parent) {
+        super.onCreateView(parent);
 
         View layout = View.inflate(getContext(), R.layout.slider_preference, null);
 
-        mMonitorBox = (TextView) layout.findViewById(R.id.monitor_box);
+        mMonitorBox = layout.findViewById(R.id.monitor_box);
         mMonitorBox.setVisibility(mMonitorBoxEnabled ? View.VISIBLE : View.GONE);
-        mBar = (SeekBar) layout.findViewById(R.id.seek_bar);
+        mBar = layout.findViewById(R.id.seek_bar);
         mBar.setMax(mMaximum - mMinimum);
         mBar.setOnSeekBarChangeListener(this);
         mBar.setProgress(mValue - mMinimum);
-        mBtnPlus = (ImageButton) layout.findViewById(R.id.btnPlus);
+        mBtnPlus = layout.findViewById(R.id.btnPlus);
         mBtnPlus.setOnClickListener(this);
-        mBtnMinus = (ImageButton) layout.findViewById(R.id.btnMinus);
+        mBtnMinus = layout.findViewById(R.id.btnMinus);
         mBtnMinus.setOnClickListener(this);
         setMonitorBoxText();
         return layout;

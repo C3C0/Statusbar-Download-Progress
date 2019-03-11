@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Peter Gregus (C3C076@xda)
+ * Copyright (C) 2019 Peter Gregus (C3C076@xda)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -120,6 +120,8 @@ public class Settings extends Activity {
 
     private static void fixFolderPermissionsAsync(final Context context) {
         AsyncTask.execute(new Runnable() {
+            @SuppressLint("SetWorldReadable")
+            @SuppressWarnings("ResultOfMethodCallIgnored")
             @Override
             public void run() {
                 // main dir
@@ -156,9 +158,9 @@ public class Settings extends Activity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
 
-            mInfoTextView = (TextView) rootView.findViewById(R.id.infoText);
+            mInfoTextView = rootView.findViewById(R.id.infoText);
 
-            mDemoButton = (Button) rootView.findViewById(R.id.btnPreview);
+            mDemoButton = rootView.findViewById(R.id.btnPreview);
             mDemoButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -190,7 +192,7 @@ public class Settings extends Activity {
         }
 
         private Boolean isModuleActive() {
-            return Boolean.valueOf(false);
+            return Boolean.FALSE;
         }
     }
 
@@ -213,7 +215,7 @@ public class Settings extends Activity {
         private RingtonePreference mPrefSound;
         private IabHelper mIabHelper; 
 
-        private static List<String> sSkuList = new ArrayList<String>(Arrays.asList(
+        private static List<String> sSkuList = new ArrayList<>(Arrays.asList(
                 "sbdp_001", "sbdp_002", "sbdp_003", "sbdp_004", "sbdp_005"));
 
         @SuppressLint("NewApi")
@@ -355,6 +357,7 @@ public class Settings extends Activity {
             }
         }
 
+        @SuppressLint("ApplySharedPref")
         @Override
         public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
             updateSummaries();
@@ -440,9 +443,9 @@ public class Settings extends Activity {
                 return;
             }
 
-            List<CharSequence> entries = new ArrayList<CharSequence>();
-            List<CharSequence> entryValues = new ArrayList<CharSequence>();
-            List<Purchase> purchasesToConsume = new ArrayList<Purchase>();
+            List<CharSequence> entries = new ArrayList<>();
+            List<CharSequence> entryValues = new ArrayList<>();
+            List<Purchase> purchasesToConsume = new ArrayList<>();
             for (String sku : sSkuList) {
                 if (inv.hasDetails(sku)) {
                     SkuDetails skuDet = inv.getSkuDetails(sku);
@@ -455,8 +458,8 @@ public class Settings extends Activity {
                 }
             }
             if (entries.size() > 0) {
-                mPrefAboutDonate.setEntries(entries.toArray(new CharSequence[entries.size()]));
-                mPrefAboutDonate.setEntryValues(entryValues.toArray(new CharSequence[entryValues.size()]));
+                mPrefAboutDonate.setEntries(entries.toArray(new CharSequence[0]));
+                mPrefAboutDonate.setEntryValues(entryValues.toArray(new CharSequence[0]));
                 mPrefAboutDonate.setSummary(R.string.pref_about_donate_summary);
                 if (purchasesToConsume.size() > 0) {
                     mIabHelper.consumeAsync(purchasesToConsume, this);

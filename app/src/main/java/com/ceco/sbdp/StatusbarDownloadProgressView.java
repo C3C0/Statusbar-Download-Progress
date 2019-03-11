@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Peter Gregus (C3C076@xda)
+ * Copyright (C) 2019 Peter Gregus (C3C076@xda)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ import android.widget.RemoteViews;
 import android.widget.TextView;
 
 public class StatusbarDownloadProgressView extends View {
-    public static final List<String> SUPPORTED_PACKAGES = new ArrayList<String>(Arrays.asList(
+    public static final List<String> SUPPORTED_PACKAGES = new ArrayList<>(Arrays.asList(
             "com.android.providers.downloads",
             "com.android.bluetooth",
             "com.mediatek.bluetooth",
@@ -94,7 +94,7 @@ public class StatusbarDownloadProgressView extends View {
         }
     }
 
-    private enum Mode { OFF, TOP, BOTTOM };
+    private enum Mode { OFF, TOP, BOTTOM }
     private Mode mMode;
     private int mEdgeMarginPx;
     private boolean mGodMode;
@@ -110,7 +110,7 @@ public class StatusbarDownloadProgressView extends View {
     private String mSoundUri;
     private boolean mSoundWhenScreenOffOnly;
     private PowerManager mPowerManager;
-    private Map<String, ProgressInfo> mProgressList = new LinkedHashMap<String, ProgressInfo>();
+    private final Map<String, ProgressInfo> mProgressList = new LinkedHashMap<>();
     private int mCurrentIndex = 0;
 
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
@@ -581,7 +581,7 @@ public class StatusbarDownloadProgressView extends View {
     private class Demo implements Runnable {
         private boolean mDemoRunning;
 
-        public void start() {
+        void start() {
             if (!mProgressList.isEmpty() || mDemoRunning) {
                 return;
             }
@@ -614,5 +614,5 @@ public class StatusbarDownloadProgressView extends View {
                 mDemoRunning = false;
             }
         }
-    };
+    }
 }
