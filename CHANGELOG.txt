@@ -1,3 +1,7 @@
+Changelog 4.1.0 - 26/05/2020
+--------------------------------------
+- Adjusted for compatibility with Android 10
+
 Changelog 4.0.0 - 11/03/2019
 --------------------------------------
 - Adjusted for compatibility with Android Pie
