@@ -83,6 +83,7 @@
     <string name="pref_about_dppp_summary">Find out more about alternate app that works without Xposed Framework</string>
     <string name="dlg_dppp_msg">Download Progress++ allows you to:\n
         &#8226; explicitly choose for which apps to track progress bar notifications\n
+        &#8226; use circle style with percentage instead of simple line\n
         &#8226; does not require Xposed Framework nor Root\n
         &#8226; supports all devices running Android 4.3 or later (SDK API 18+)</string>
     <string name="dlg_dppp_ok">Yes, I\'m in</string>

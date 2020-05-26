@@ -83,6 +83,7 @@
     <string name="pref_about_dppp_summary">K dispozici alternativní aplikace, která nevyžaduje Xposed Framework</string>
     <string name="dlg_dppp_msg">Download Progress++ umožňuje:\n
         &#8226; explicitně definovat aplikace, pro které zobrazovat indikátor stahování\n
+        &#8226; použít kruhový indikátor s procenty místo jednoduché čáry\n
         &#8226; nevyžaduje Xposed Framework ani Root\n
         &#8226; podporuje všechna zařízení s Android 4.3 nebo vyšším (SDK API 18+)</string>
     <string name="dlg_dppp_ok">Mám zájem</string>
