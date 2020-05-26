@@ -46,7 +46,9 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
             "com.android.systemui.statusbar.BaseStatusBar";
     private static final String CLASS_NOTIF_DATA_ENTRY = "com.android.systemui.statusbar.NotificationData$Entry";
     private static final String CLASS_CLOCK = "com.android.systemui.statusbar.policy.Clock";
-    private static final String CLASS_NOTIF_ENTRY_MANAGER = "com.android.systemui.statusbar.NotificationEntryManager";
+    private static final String CLASS_NOTIF_ENTRY_MANAGER = Build.VERSION.SDK_INT >= 29 ?
+            "com.android.systemui.statusbar.notification.NotificationEntryManager" :
+            "com.android.systemui.statusbar.NotificationEntryManager";
 
     static void log(String message) {
         XposedBridge.log(TAG + ": " + message);
@@ -158,20 +160,27 @@ public class ModSbdp implements IXposedHookZygoteInit, IXposedHookLoadPackage {
 
                 // notification removal
                 if (Build.VERSION.SDK_INT >= 28) {
-                    XposedHelpers.findAndHookMethod(classNotifEntryManager, "removeNotification",
-                            String.class, NotificationListenerService.RankingMap.class, new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) {
-                            if (mDownloadProgressView != null) {
-                                Object notifData = XposedHelpers.getObjectField(param.thisObject, "mNotificationData");
-                                Object entry = XposedHelpers.callMethod(notifData, "get", param.args[0]);
-                                if (entry != null) {
-                                    mDownloadProgressView.onNotificationRemoved(
-                                            XposedHelpers.getObjectField(entry, "notification"));
+                    XC_MethodHook removeNotificationHook =
+                        new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) {
+                                if (mDownloadProgressView != null) {
+                                    Object notifData = XposedHelpers.getObjectField(param.thisObject, "mNotificationData");
+                                    Object entry = XposedHelpers.callMethod(notifData, "get", param.args[0]);
+                                    if (entry != null) {
+                                        mDownloadProgressView.onNotificationRemoved(
+                                                XposedHelpers.getObjectField(entry, "notification"));
+                                    }
                                 }
                             }
-                        }
-                    });
+                    };
+                    if (Build.VERSION.SDK_INT >= 29) {
+                        XposedHelpers.findAndHookMethod(classNotifEntryManager, "removeNotification",
+                                String.class, NotificationListenerService.RankingMap.class, int.class, removeNotificationHook);
+                    } else {
+                        XposedHelpers.findAndHookMethod(classNotifEntryManager, "removeNotification",
+                                String.class, NotificationListenerService.RankingMap.class, removeNotificationHook);
+                    }
                 } else {
                     XposedBridge.hookAllMethods(classBaseStatusbar, "removeNotificationViews", new XC_MethodHook() {
                         @Override
